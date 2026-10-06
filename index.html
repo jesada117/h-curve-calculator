@@ -125,6 +125,63 @@
     .history-item { background: #f8fafc; padding: 5px; border-radius: 6px; border: 1px solid #f1f5f9; }
     .history-item span { color: #64748b; font-size: 0.68rem; font-weight: 600; display: block; }
     .history-item b { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: #0f172a; }
+
+    /* ===== UI POLISH V7 ===== */
+    body {
+      background-color:#eaf1f7;
+      background-image:linear-gradient(rgba(14,116,144,.07) 1px, transparent 1px),linear-gradient(90deg, rgba(14,116,144,.07) 1px, transparent 1px);
+      background-size:22px 22px; padding:18px 12px 70px;
+    }
+    .container{max-width:720px;}
+    .app-header{position:relative;overflow:hidden;text-align:left;padding:20px 22px 22px;margin-bottom:14px;border-radius:20px;background:linear-gradient(135deg,#0b172a 0%,#123b59 58%,#0369a1 100%);box-shadow:0 14px 30px rgba(15,23,42,.16);color:#fff;}
+    .app-header::after{content:'';position:absolute;width:190px;height:190px;right:-55px;top:-85px;border:1px solid rgba(255,255,255,.13);border-radius:50%;box-shadow:0 0 0 24px rgba(255,255,255,.025),0 0 0 48px rgba(255,255,255,.02);}
+    .survey-badge{position:relative;z-index:1;background:rgba(45,212,191,.12);border:1px solid rgba(45,212,191,.4);color:#67e8f9;font-size:.68rem;padding:5px 11px;margin-bottom:9px;letter-spacing:1px;}
+    .app-header h1{position:relative;z-index:1;color:#fff;font-size:1.52rem;letter-spacing:.2px;}
+    .app-header::before{content:'FIELD • DESIGN • REPORT';position:absolute;z-index:1;right:22px;bottom:18px;color:rgba(255,255,255,.48);font-size:.58rem;font-weight:700;letter-spacing:1.2px;}
+    .nav-tabs{padding:5px;gap:5px;border-radius:14px;margin-bottom:15px;box-shadow:0 7px 18px rgba(15,23,42,.08);}
+    .tab-btn{padding:11px 7px;font-size:.84rem;border-radius:10px;}
+    .tab-btn.active{background:linear-gradient(135deg,#0284c7,#0369a1);box-shadow:0 6px 14px rgba(2,132,199,.28);}
+    .card{border-radius:16px;padding:19px;margin-bottom:14px;box-shadow:0 8px 22px rgba(15,23,42,.06);border-color:#d8e2ec;}
+    .card-title{font-size:1rem;padding-bottom:10px;margin-bottom:15px;display:flex;align-items:center;gap:7px;}
+    .card-title::before{content:'';width:4px;height:19px;border-radius:4px;background:linear-gradient(#06b6d4,#0284c7);display:inline-block;}
+    input,select{height:46px;border-radius:10px;background:#fbfdff;border-color:#cbd5e1;}
+    input:hover,select:hover{border-color:#7dd3fc;}
+    .btn{height:48px;border-radius:10px;box-shadow:0 6px 14px rgba(2,132,199,.16);}
+    .btn-calc{background:linear-gradient(135deg,#0f766e,#0d9488);}
+    .btn-save{background:linear-gradient(135deg,#15803d,#16a34a);}
+    .res-box{border-radius:11px;padding:10px 12px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.45);}
+    .survey-box{border-radius:12px;background:linear-gradient(135deg,#0b1220,#172033);box-shadow:0 8px 18px rgba(15,23,42,.16);}
+    .field-action{border-radius:13px;background:linear-gradient(135deg,#0b172a,#123b59 70%,#075985);box-shadow:0 8px 18px rgba(15,23,42,.12);}
+    .diagram-container{border-radius:13px;padding:8px;box-shadow:inset 0 0 0 1px #e2e8f0;background:#f8fafc;}
+    .result-divider{margin:20px 0 11px;color:#0369a1;letter-spacing:.4px;}
+    .history-card{border-radius:13px;padding:13px;box-shadow:0 6px 16px rgba(15,23,42,.05);}
+    .history-title{color:#0369a1;}
+    @media (max-width:600px){.app-header::before{display:none}.app-header{padding:18px}.app-header h1{font-size:1.28rem}.container{max-width:100%}.history-grid{grid-template-columns:repeat(2,1fr)}}
+
+    /* Footer Credit */
+    .app-footer {
+      text-align: center;
+      margin: 22px 0 4px;
+      padding: 14px 10px 4px;
+      color: #64748b;
+      font-size: 0.76rem;
+      letter-spacing: 0.25px;
+    }
+    .app-footer .credit-main {
+      font-weight: 700;
+      color: #334155;
+    }
+    .app-footer .credit-name {
+      color: #0284c7;
+      font-weight: 800;
+    }
+    .app-footer .credit-sub {
+      margin-top: 3px;
+      font-size: 0.68rem;
+      color: #94a3b8;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
   </style>
 </head>
 <body>
@@ -132,7 +189,7 @@
 <div class="container">
   
   <div class="app-header">
-    <div class="survey-badge">ENGINEERING SURVEY TOOL</div>
+    <div class="survey-badge">ENGINEERING SURVEY • H-CURVE</div>
     <h1>H-CURVE CALCULATOR PRO</h1>
   </div>
 
@@ -266,13 +323,18 @@
     <div class="card">
       <div class="card-title" style="display:flex; justify-content:space-between; align-items:center;">
         📁 ฐานข้อมูลสำรวจ
-        <button onclick="exportToCleanExcel()" style="background:#16a34a; color:white; border:none; padding:6px 14px; border-radius:6px; font-weight:700; cursor:pointer; font-size:0.82rem;">📥 ส่งออกรายงาน Excel</button>
+        <button class="btn btn-save" onclick="exportToCleanExcel()" style="width:auto;height:38px;margin:0;padding:0 14px;font-size:.78rem;box-shadow:none;">📊 ส่งออก Excel</button>
       </div>
       <div id="records_container"></div>
-      <button onclick="clearAllRecords()" style="width:100%; background:#fef2f2; color:#dc2626; border:1px solid #fecaca; padding:10px; border-radius:8px; font-weight:700; margin-top:10px; cursor:pointer; font-size:0.85rem;">🗑 ล้างข้อมูลทั้งหมด</button>
+      <button onclick="clearAllRecords()" style="width:100%;background:#fff7f7;color:#dc2626;border:1px solid #fecaca;padding:10px;border-radius:10px;font-weight:700;margin-top:10px;cursor:pointer;font-size:.82rem;">🗑 ล้างข้อมูลทั้งหมด</button>
     </div>
   </div>
 
+</div>
+
+<div class="app-footer">
+  <div class="credit-main">Designed &amp; Developed by <span class="credit-name">Jesada</span></div>
+  <div class="credit-sub">H-CURVE CALCULATOR PRO • ENGINEERING SURVEY TOOL</div>
 </div>
 
 <script>
@@ -588,6 +650,9 @@
       { header: 'รูปโค้ง', key: 'diagram', width: 40 }
     ];
 
+    // ช่อง N = 40 ตามแบบรายงานที่กำหนด
+    ws.getColumn(14).width = 40;
+
     ws.mergeCells('A1:N1');
     ws.getCell('A1').value = 'คำนวณโค้งราบ (HORIZONTAL CURVE REPORT)';
     ws.getCell('A1').font = { bold: true, size: 18, color: { argb: 'FFFFFFFF' } };
@@ -742,8 +807,9 @@
         ''
       ]);
 
-      // จัดความสูงแถวให้สัมพันธ์กับช่องรูปโค้ง
-      row.height = 210;
+      // ขนาดรายงาน Excel ตามสเกลที่ใช้งานจริง
+      // แถว 177 pt ≈ 6.25 ซม. ที่ 96 dpi / 72 pt ต่อ inch
+      row.height = 177;
       row.eachCell((cell, col) => {
         cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
         cell.border = {
@@ -769,12 +835,13 @@
       row.getCell(14).value = null;
       row.getCell(14).alignment = { horizontal: 'center', vertical: 'middle' };
 
-      // วางรูปให้อยู่ภายในเซลล์ N แบบมีขอบเล็กน้อย
-      // ขนาด 260x190 px เหมาะกับ Column Width 40 และ Row Height 210
-      // ใช้ oneCell anchor เพื่อให้รูปติดกับเซลล์และไม่ลอยไปชนแถวอื่น
+      // ฝังรูปกับเซลล์ N ของแถวนั้นโดยตรงในลักษณะ Cell Anchor
+      // ขนาดตามที่วัดแล้ว: กว้าง 8.56 ซม. x สูง 6.25 ซม.
+      // 96 dpi => 323.53 x 236.22 px และ Row Height 177 pt ≈ 236 px
+      // editAs: oneCell = รูปจะติด/เคลื่อนตามเซลล์ N ไม่ลอยไปตามแถวอื่น
       ws.addImage(imageId, {
-        tl: { col: 13.035, row: row.number - 0.965 },
-        ext: { width: 260, height: 190 },
+        tl: { col: 13, row: row.number - 1 },
+        ext: { width: 323.53, height: 236.22 },
         editAs: 'oneCell'
       });
     }
