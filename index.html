@@ -3,11 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>H-CURVE CALCULATOR PRO | Engineering Survey</title>
+  <title>H-CURVE CALCULATOR PRO</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
   <style>
     :root {
       --primary: #0284c7;
@@ -20,9 +19,9 @@
     * { box-sizing: border-box; font-family: 'Prompt', sans-serif; margin: 0; padding: 0; }
     
     body {
-      background-color: #f1f5f9;
-      background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
-      background-size: 20px 20px;
+      background-color: #eef3f8;
+      background-image: linear-gradient(rgba(148,163,184,0.10) 1px, transparent 1px), linear-gradient(90deg, rgba(148,163,184,0.10) 1px, transparent 1px);
+      background-size: 24px 24px;
       color: var(--text-main);
       padding: 16px 12px 60px;
       min-height: 100vh;
@@ -94,6 +93,15 @@
     .survey-box { grid-column: span 2; background: #0f172a; border-radius: 8px; padding: 14px; color: white; text-align: center; }
     .survey-box .res-val { color: #2dd4bf; font-size: 1.65rem; margin: 4px 0; }
 
+
+    .field-action { background: linear-gradient(135deg,#0f172a,#1e293b); border-radius: 12px; padding: 14px 16px; color: white; margin: 14px 0; border: 1px solid #334155; }
+    .field-action .fa-label { color:#94a3b8; font-size:.72rem; font-weight:700; letter-spacing:.3px; }
+    .field-action .fa-value { color:#f8fafc; font-family:'JetBrains Mono',monospace; font-size:1.12rem; font-weight:800; margin-top:2px; }
+    .field-action .fa-distance { color:#2dd4bf; font-family:'JetBrains Mono',monospace; font-size:1.8rem; font-weight:800; text-align:center; margin-top:6px; }
+    .btn-secondary { width:100%; height:40px; background:#e0f2fe; color:#0369a1; border:1px solid #7dd3fc; border-radius:8px; font-size:.82rem; font-weight:700; cursor:pointer; }
+    .result-divider { display:flex; align-items:center; gap:8px; margin:18px 0 10px; color:#64748b; font-size:.76rem; font-weight:800; }
+    .result-divider::before,.result-divider::after { content:''; height:1px; background:#cbd5e1; flex:1; }
+
     /* Diagram Area */
     .diagram-container {
       background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px;
@@ -117,70 +125,20 @@
     .history-item { background: #f8fafc; padding: 5px; border-radius: 6px; border: 1px solid #f1f5f9; }
     .history-item span { color: #64748b; font-size: 0.68rem; font-weight: 600; display: block; }
     .history-item b { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: #0f172a; }
-  
-    /* ===== H-CURVE PRO ENGINEERING UI ===== */
-    body{
-      background:
-        linear-gradient(rgba(226,232,240,.55) 1px,transparent 1px),
-        linear-gradient(90deg,rgba(226,232,240,.55) 1px,transparent 1px),#f4f7fa;
-      background-size:24px 24px;
-    }
-    .container{max-width:760px}
-    .app-shell{background:rgba(255,255,255,.95);border:1px solid #d7e0ea;border-radius:18px;box-shadow:0 18px 45px rgba(15,23,42,.10);overflow:hidden;margin-bottom:18px}
-    .pro-header{position:relative;padding:18px 20px 16px;color:#fff;background:linear-gradient(135deg,#071a2f 0%,#0b2d4d 58%,#075985 100%);overflow:hidden}
-    .pro-header:after{content:"";position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);background-size:18px 18px;pointer-events:none}
-    .pro-header-inner{position:relative;z-index:1;display:flex;align-items:center;gap:14px}
-    .pro-logo{width:64px;height:64px;flex:0 0 64px;border-radius:14px;background:linear-gradient(145deg,#fff,#dbeafe);border:1px solid rgba(255,255,255,.8);box-shadow:0 8px 20px rgba(0,0,0,.20);display:grid;place-items:center}
-    .pro-brand{min-width:0}.pro-kicker{font-size:.68rem;letter-spacing:1.4px;font-weight:800;color:#7dd3fc;margin-bottom:2px}
-    .pro-title{font-size:1.35rem;line-height:1.15;font-weight:800;letter-spacing:.2px}.pro-subtitle{margin-top:4px;color:#cbd5e1;font-size:.72rem;font-weight:500}
-    .pro-status{margin-left:auto;align-self:flex-start;display:flex;align-items:center;gap:6px;background:rgba(15,23,42,.46);border:1px solid rgba(255,255,255,.14);padding:6px 9px;border-radius:999px;font-size:.68rem;white-space:nowrap}
-    .status-dot{width:7px;height:7px;border-radius:50%;background:#34d399;box-shadow:0 0 0 4px rgba(52,211,153,.13)}
-    .pro-meta{position:relative;z-index:1;margin-top:13px;display:flex;flex-wrap:wrap;gap:7px}.meta-chip{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.07);color:#e2e8f0;border-radius:7px;padding:5px 8px;font-size:.66rem;font-weight:700}
-    .nav-tabs{margin:0;border-radius:0;border:0;border-bottom:1px solid #e2e8f0;box-shadow:none;padding:7px}.tab-btn.active{background:linear-gradient(135deg,#0284c7,#0369a1)}
-    .card{border-radius:14px;box-shadow:0 5px 16px rgba(15,23,42,.045)}.card-title{display:flex;align-items:center;gap:8px}.card-title:before{content:"";width:4px;height:18px;border-radius:4px;background:#0284c7;display:inline-block}
-    .engineering-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0 0 14px}.engineering-strip .mini{background:#fff;border:1px solid #dbe4ee;border-radius:10px;padding:9px 10px}.engineering-strip .mini span{display:block;color:#64748b;font-size:.66rem;font-weight:700}.engineering-strip .mini b{display:block;margin-top:2px;color:#0f172a;font-family:'JetBrains Mono',monospace;font-size:.86rem}
-    .report-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.report-btn{flex:1;min-width:150px;border:1px solid #cbd5e1;background:#fff;color:#0f172a;padding:9px 12px;border-radius:8px;font-weight:800;cursor:pointer;font-size:.82rem}.report-btn.excel{background:#15803d;border-color:#15803d;color:#fff}.report-btn.print{background:#0f172a;border-color:#0f172a;color:#fff}.report-btn:hover{filter:brightness(.97);transform:translateY(-1px)}
-    .pro-footer{text-align:center;color:#64748b;font-size:.68rem;padding:8px 0 0}
-    @media(max-width:600px){.pro-status{display:none}.pro-title{font-size:1.08rem}.pro-logo{width:54px;height:54px;flex-basis:54px}.engineering-strip{grid-template-columns:1fr}}
-    @media print{body{background:#fff!important;padding:0}.nav-tabs,.report-actions,.pro-footer{display:none!important}.container,.app-shell{max-width:none;box-shadow:none;border:0}}
-
   </style>
 </head>
 <body>
 
 <div class="container">
-
-  <div class="app-shell">
-    <header class="pro-header">
-      <div class="pro-header-inner">
-        <div class="pro-logo">
-          <svg width="52" height="52" viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg" aria-label="H-CURVE">
-            <rect x="2" y="2" width="48" height="48" rx="11" fill="#0b2d4d"/>
-            <path d="M10 14v24M21 14v24M10 26h11" stroke="#38bdf8" stroke-width="4" stroke-linecap="round"/>
-            <path d="M29 39c0-10 4-17 12-24" fill="none" stroke="#f59e0b" stroke-width="4" stroke-linecap="round"/>
-            <circle cx="41" cy="15" r="3.2" fill="#f59e0b"/>
-            <path d="M27 10h17M27 43h17" stroke="#94a3b8" stroke-width="1.5" stroke-dasharray="2 3"/>
-          </svg>
-        </div>
-        <div class="pro-brand">
-          <div class="pro-kicker">ENGINEERING SURVEY SOFTWARE</div>
-          <div class="pro-title">H-CURVE CALCULATOR PRO</div>
-          <div class="pro-subtitle">Horizontal Curve • Field Survey • Calculation &amp; Reporting</div>
-        </div>
-        <div class="pro-status"><span class="status-dot"></span> ONLINE</div>
-      </div>
-      <div class="pro-meta">
-        <span class="meta-chip">R / T / E / L</span>
-        <span class="meta-chip">PC / PI / PT</span>
-        <span class="meta-chip">25 m Station</span>
-        <span class="meta-chip">Engineering Report</span>
-      </div>
-    </header>
+  
+  <div class="app-header">
+    <div class="survey-badge">ENGINEERING SURVEY TOOL</div>
+    <h1>H-CURVE CALCULATOR PRO</h1>
+  </div>
 
   <div class="nav-tabs">
     <button class="tab-btn active" onclick="switchPage('calc')">📐 คำนวณค่า</button>
-    <button class="tab-btn" onclick="switchPage('diagram')">🛣️ รูปแบบแปลน</button>
-    <button class="tab-btn" onclick="switchPage('history')">📁 ประวัติ<span class="badge-count" id="record_count">0</span></button>
+    <button class="tab-btn" onclick="switchPage('history')">📁 ฐานข้อมูล<span class="badge-count" id="record_count">0</span></button>
   </div>
 
   <!-- หน้าที่ 1: คำนวณค่า -->
@@ -250,7 +208,7 @@
     </div>
 
     <div class="card" id="results_area" style="display: none;">
-      <div class="card-title">2. ผลลัพธ์องค์ประกอบโค้ง</div>
+      <div class="card-title">② ผลลัพธ์องค์ประกอบโค้ง</div>
       
       <div class="res-grid">
         <div class="res-box"><div class="res-title">รัศมีความโค้ง (R)</div><div class="res-val" id="res_r">-</div></div>
@@ -272,45 +230,45 @@
         </div>
       </div>
 
-      <button class="btn btn-save" onclick="saveSurveyRecord()">💾 บันทึกข้อมูลโค้งนี้</button>
     </div>
   </div>
 
-  <!-- หน้าที่ 2: รูปแบบแปลน -->
-  <div id="page_diagram" class="page-section">
+  <div class="result-divider">ตรวจสอบแบบแปลนและงานสนาม</div>
     <div class="card">
-      <div class="card-title">🛣️ รูปแบบแปลน (Curve Diagram)</div>
+      <div class="card-title">③ รูปโค้ง (Curve Diagram)</div>
       <p style="font-size: 0.82rem; color: #64748b; margin-bottom: 10px;" id="diagram_status">
-        กรุณาคำนวณโค้งในหน้า "คำนวณค่า" ก่อน เพื่อแสดงรูปแบบแปลนที่นี่
+        เมื่อคำนวณโค้งแล้ว รูปโค้งและเส้นประกอบจะปรากฏตรงนี้ทันที
       </p>
 
-      <!-- ปุ่มดาวน์โหลดรูปภาพโดยตรง คมชัด 100% -->
-      <button id="btn_save_png" onclick="downloadDiagramPNG()" style="display:none; width:100%; margin-bottom:10px; background:#0284c7; color:white; border:none; padding:10px; border-radius:8px; font-weight:700; cursor:pointer; font-size:0.88rem;">
-        📥 ดาวน์โหลดรูปแปลน (.PNG ความคมชัดสูง)
+      <div class="field-action">
+        <div class="fa-label">FIELD SURVEY • จุดยิงกล้องถัดไป</div>
+        <div style="display:flex;justify-content:space-between;gap:12px;margin-top:8px;">
+          <div><div class="fa-label">STA เต็มถัดไป</div><div class="fa-value" id="field_next_sta">-</div></div>
+          <div style="text-align:right;"><div class="fa-label">STA PI</div><div class="fa-value" id="field_pi_sta">-</div></div>
+        </div>
+        <div class="fa-distance" id="field_distance">-</div>
+        <div style="text-align:center;color:#94a3b8;font-size:.7rem;margin-top:2px;">เมตร • วัดระยะดึงเทปออกจากตัวกล้อง</div>
+      </div>
+
+      <!-- ดาวน์โหลดรูปเป็นตัวเลือกเสริม -->
+      <button id="btn_save_png" class="btn-secondary" onclick="downloadDiagramPNG()" style="display:none; margin-bottom:10px;">
+        📥 ดาวน์โหลดรูปโค้ง PNG
       </button>
 
       <div class="diagram-container" id="diagram_render_area" style="display: none;"></div>
-    </div>
-  </div>
 
-  <!-- หน้าที่ 3: ประวัติข้อมูล -->
+  <button class="btn btn-save" onclick="saveSurveyRecord()" style="margin-top:0; margin-bottom:16px;">💾 บันทึกข้อมูลโค้งนี้</button>
+
+  <!-- หน้าที่ 2: ฐานข้อมูล -->
   <div id="page_history" class="page-section">
     <div class="card">
       <div class="card-title" style="display:flex; justify-content:space-between; align-items:center;">
         📁 ฐานข้อมูลสำรวจ
-        <div class="report-actions"><button class="report-btn excel" onclick="exportToCleanExcel()">📊 Excel Report</button><button class="report-btn print" onclick="printEngineeringReport()">🖨️ พิมพ์รายงาน</button></div>
-      </div>
-      <div class="engineering-strip" id="history_summary">
-        <div class="mini"><span>จำนวนโค้งที่บันทึก</span><b id="summary_count">0</b></div>
-        <div class="mini"><span>รูปแบบรายงาน</span><b>ENGINEERING</b></div>
-        <div class="mini"><span>หน่วย</span><b>เมตร / องศา</b></div>
+        <button onclick="exportToCleanExcel()" style="background:#16a34a; color:white; border:none; padding:6px 14px; border-radius:6px; font-weight:700; cursor:pointer; font-size:0.82rem;">📥 ส่งออกรายงาน Excel</button>
       </div>
       <div id="records_container"></div>
       <button onclick="clearAllRecords()" style="width:100%; background:#fef2f2; color:#dc2626; border:1px solid #fecaca; padding:10px; border-radius:8px; font-weight:700; margin-top:10px; cursor:pointer; font-size:0.85rem;">🗑 ล้างข้อมูลทั้งหมด</button>
     </div>
-  </div>
-
-    <div class="pro-footer">H-CURVE CALCULATOR PRO • Engineering Survey Utility • v2.0</div>
   </div>
 
 </div>
@@ -326,11 +284,8 @@
     if (page === 'calc') {
       document.querySelectorAll('.tab-btn')[0].classList.add('active');
       document.getElementById('page_calc').classList.add('active');
-    } else if (page === 'diagram') {
-      document.querySelectorAll('.tab-btn')[1].classList.add('active');
-      document.getElementById('page_diagram').classList.add('active');
     } else if (page === 'history') {
-      document.querySelectorAll('.tab-btn')[2].classList.add('active');
+      document.querySelectorAll('.tab-btn')[1].classList.add('active');
       document.getElementById('page_history').classList.add('active');
       renderHistoryList();
     }
@@ -491,12 +446,15 @@
         </svg>`;
     }
 
-    document.getElementById('diagram_status').innerHTML = `แปลนสำหรับ: <strong style="color:#0f172a;">${document.getElementById('curve_name').value || 'โค้งล่าสุด'}</strong>`;
+    document.getElementById('diagram_status').innerHTML = `รูปโค้งสำหรับ: <strong style="color:#0f172a;">${document.getElementById('curve_name').value || 'โค้งล่าสุด'}</strong>`;
+    document.getElementById('field_next_sta').innerText = formatStation(nextFullSta);
+    document.getElementById('field_pi_sta').innerText = formatStation(P);
+    document.getElementById('field_distance').innerText = distFromPi.toFixed(3) + ' ม.';
     document.getElementById('diagram_render_area').innerHTML = svgContent;
     document.getElementById('diagram_render_area').style.display = 'block';
     document.getElementById('btn_save_png').style.display = 'block';
 
-    switchPage('diagram');
+    document.getElementById('results_area').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   function getStoredRecords() {
@@ -516,7 +474,6 @@
   function renderHistoryList() {
     const records = getStoredRecords();
     document.getElementById('record_count').innerText = records.length;
-    const summaryCount = document.getElementById('summary_count'); if (summaryCount) summaryCount.innerText = records.length;
     const container = document.getElementById('records_container');
 
     if (records.length === 0) {
@@ -590,282 +547,239 @@
     img.src = url;
   }
 
-  // พิมพ์รายงานวิศวกรรม A4 แนวนอน
-  function printEngineeringReport() {
-    const records = getStoredRecords();
-    if (records.length === 0) return alert("ไม่มีข้อมูลให้จัดทำรายงาน");
-    const recs = records.slice().reverse();
-    const now = new Date().toLocaleString('th-TH');
-
-    let html = `<!DOCTYPE html><html lang="th"><head><meta charset="UTF-8">
-      <title>H-CURVE ENGINEERING REPORT</title>
-      <style>
-        @page{size:A4 landscape;margin:12mm}*{box-sizing:border-box}
-        body{font-family:Arial,'Tahoma',sans-serif;color:#0f172a;margin:0;background:#fff}
-        .cover{border:2px solid #0b2d4d;padding:18px 20px;margin-bottom:16px}
-        .brand{display:flex;align-items:center;gap:12px}.mark{width:54px;height:54px;background:#0b2d4d;border-radius:10px;color:#38bdf8;display:grid;place-items:center;font-weight:900;font-size:20px}
-        h1{margin:0;font-size:22px;color:#0b2d4d}.sub{font-size:11px;color:#64748b;margin-top:4px}
-        .meta{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}.chip{border:1px solid #cbd5e1;padding:5px 8px;border-radius:5px;font-size:10px;font-weight:bold}
-        table{border-collapse:collapse;width:100%;font-size:9px}th{background:#0b2d4d;color:#fff;padding:6px;border:1px solid #64748b}td{padding:5px;border:1px solid #cbd5e1;text-align:center}tr:nth-child(even) td{background:#f8fafc}
-        .section{background:#0b2d4d;color:#fff;padding:8px 10px;font-weight:bold;margin:16px 0 8px}.curve{page-break-inside:avoid;border:1px solid #cbd5e1;margin:0 0 14px}.curve-title{background:#e0f2fe;color:#0b2d4d;padding:7px 10px;font-weight:bold}.diagram{text-align:center;padding:8px}.diagram img{width:520px;max-width:100%;height:auto;border:1px solid #cbd5e1}.foot{font-size:8px;color:#64748b;margin-top:10px;text-align:right}
-      </style></head><body>
-      <div class="cover"><div class="brand"><div class="mark">HC</div><div>
-        <h1>H-CURVE CALCULATOR PRO</h1><div class="sub">HORIZONTAL CURVE • ENGINEERING SURVEY CALCULATION REPORT</div>
-      </div></div><div class="meta">
-        <span class="chip">จำนวนโค้ง: ${recs.length}</span><span class="chip">หน่วย: เมตร</span><span class="chip">จัดทำเมื่อ: ${escapeHtml(now)}</span>
-      </div></div>
-      <div class="section">1. สรุปผลการคำนวณโค้งราบ</div>
-      <table><tr><th>ลำดับ</th><th>ชื่อโค้ง</th><th>ทิศทาง</th><th>STA PC</th><th>STA PI</th><th>STA PT</th><th>R</th><th>T</th><th>E</th><th>L</th><th>ADJ</th><th>ระยะยิงกล้อง</th></tr>`;
-
-    recs.forEach((r,i)=>{
-      const dir = r.direction === -1 ? "ซ้าย ↶" : "ขวา ↷";
-      html += `<tr><td>${i+1}</td><td style="text-align:left">${escapeHtml(r.name)}</td><td>${dir}</td><td>${r.results.pc}</td><td>${r.results.pi}</td><td>${r.results.pt}</td><td>${r.results.r}</td><td>${r.results.t}</td><td>${r.results.e}</td><td>${r.results.l}</td><td>${r.results.adj}</td><td>${r.results.distCamera}</td></tr>`;
-    });
-
-    html += `</table><div class="section">2. รูปแบบแปลนโค้งราบ</div>`;
-    recs.forEach(r=>{
-      const svg=createExportDiagramSVG(r);
-      const b64="data:image/svg+xml;base64,"+btoa(unescape(encodeURIComponent(svg)));
-      html += `<div class="curve"><div class="curve-title">${escapeHtml(r.name)} — ${r.direction === -1 ? "โค้งซ้าย ↶" : "โค้งขวา ↷"}</div><div class="diagram"><img src="${b64}"><div style="font-size:10px;margin-top:4px">PC ${r.results.pc} • PI ${r.results.pi} • PT ${r.results.pt} • R ${r.results.r} m • T ${r.results.t} m • E ${r.results.e} m • L ${r.results.l} m</div></div></div>`;
-    });
-    html += `<div class="foot">H-CURVE CALCULATOR PRO • Engineering Survey Utility</div><script>window.onload=function(){setTimeout(function(){window.print()},350)}<\/script></body></html>`;
-
-    const win=window.open('','_blank');
-    if(!win) return alert("เบราว์เซอร์บล็อกหน้าต่างรายงาน กรุณาอนุญาต Pop-up สำหรับเว็บไซต์นี้");
-    win.document.open();win.document.write(html);win.document.close();
-  }
-
-  // ส่งออกรายงาน Excel พร้อมแนบรูปแปลนของแต่ละโค้ง
+  // ส่งออกรายงาน Excel พร้อมรูปโค้งของแต่ละโค้ง
   async function exportToCleanExcel() {
     const records = getStoredRecords();
     if (records.length === 0) return alert("ไม่มีข้อมูลให้ส่งออก");
 
-    if (typeof XLSX === "undefined") {
-      return alert("กำลังโหลดระบบ Excel กรุณาลองใหม่อีกครั้ง");
+    // โหลด ExcelJS ครั้งแรกที่กด Export
+    if (!window.ExcelJS) {
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js';
+      script.onload = () => exportToCleanExcel();
+      script.onerror = () => alert("ไม่สามารถโหลดระบบ Excel ได้ กรุณาตรวจสอบอินเทอร์เน็ตแล้วลองใหม่");
+      document.head.appendChild(script);
+      return;
     }
 
     const chronologicalRecords = records.slice().reverse();
+    const workbook = new ExcelJS.Workbook();
+    workbook.creator = 'H-CURVE CALCULATOR PRO';
+    workbook.created = new Date();
 
-    // สร้าง workbook
-    const wb = XLSX.utils.book_new();
-
-    // Sheet 1: ตารางสรุปข้อมูล
-    const rows = [
-      ["รายงานสรุปผลการสำรวจและคำนวณโค้งราบ (HORIZONTAL CURVE REPORT)"],
-      ["โครงการงานทางวิศวกรรมภาคสนาม", "จัดทำเมื่อ:", new Date().toLocaleString('th-TH')],
-      [],
-      ["ลำดับ","ชื่อโค้ง","ทิศทาง","วัน-เวลาสำรวจ","STA PC","STA PI","STA PT",
-       "รัศมี R (ม.)","สัมผัส T (ม.)","ภายนอก E (ม.)","ความยาว L (ม.)",
-       "ปรับแก้ ADJ (ม.)","ระยะยิงกล้อง (ม.)"]
+    const ws = workbook.addWorksheet('Curve Report');
+    ws.views = [{ state: 'frozen', ySplit: 4 }];
+    ws.columns = [
+      { header: 'ลำดับ', key: 'no', width: 9 },
+      { header: 'ชื่อโค้ง', key: 'name', width: 22 },
+      { header: 'โค้ง', key: 'direction', width: 14 },
+      { header: 'วัน-เวลาสำรวจ', key: 'timestamp', width: 23 },
+      { header: 'STA PC', key: 'pc', width: 15 },
+      { header: 'STA PI', key: 'pi', width: 15 },
+      { header: 'STA PT', key: 'pt', width: 15 },
+      { header: 'รัศมี R (ม.)', key: 'r', width: 14 },
+      { header: 'สัมผัส T (ม.)', key: 't', width: 14 },
+      { header: 'ภายนอก E (ม.)', key: 'e', width: 14 },
+      { header: 'ความยาว L (ม.)', key: 'l', width: 14 },
+      { header: 'ปรับแก้ ADJ (ม.)', key: 'adj', width: 16 },
+      { header: 'ระยะยิงกล้อง (ม.)', key: 'distCamera', width: 18 },
+      { header: 'รูปโค้ง', key: 'diagram', width: 50 }
     ];
 
-    chronologicalRecords.forEach((r, index) => {
-      const dirTxt = r.direction === -1 ? "ซ้าย ↶" : "ขวา ↷";
-      rows.push([
-        index + 1, r.name, dirTxt, r.timestamp,
-        r.results.pc, r.results.pi, r.results.pt,
-        Number(r.results.r), Number(r.results.t), Number(r.results.e),
-        Number(r.results.l), Number(r.results.adj), Number(r.results.distCamera)
-      ]);
+    ws.mergeCells('A1:N1');
+    ws.getCell('A1').value = 'คำนวณโค้งราบ (HORIZONTAL CURVE REPORT)';
+    ws.getCell('A1').font = { bold: true, size: 18, color: { argb: 'FFFFFFFF' } };
+    ws.getCell('A1').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0369A1' } };
+    ws.getCell('A1').alignment = { horizontal: 'center', vertical: 'middle' };
+    ws.getRow(1).height = 32;
+
+    ws.mergeCells('A2:N2');
+    ws.getCell('A2').value = 'โครงการงานทางวิศวกรรมภาคสนาม | จัดทำเมื่อ: ' + new Date().toLocaleString('th-TH');
+    ws.getCell('A2').font = { size: 11, color: { argb: 'FF475569' } };
+    ws.getCell('A2').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF1F5F9' } };
+    ws.getCell('A2').alignment = { horizontal: 'center' };
+
+    ws.mergeCells('A3:N3');
+    ws.getCell('A3').value = 'รูปโค้งของแต่ละโค้งถูกฝังลงในไฟล์ Excel โดยอัตโนมัติ';
+    ws.getCell('A3').font = { italic: true, size: 10, color: { argb: 'FF64748B' } };
+    ws.getCell('A3').alignment = { horizontal: 'center' };
+
+    const headerRow = ws.getRow(4);
+    headerRow.values = ws.columns.map(c => c.header);
+    headerRow.height = 28;
+    headerRow.eachCell(cell => {
+      cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0F172A' } };
+      cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
+      cell.border = { top:{style:'thin',color:{argb:'FF94A3B8'}}, bottom:{style:'thin',color:{argb:'FF94A3B8'}}, left:{style:'thin',color:{argb:'FF94A3B8'}}, right:{style:'thin',color:{argb:'FF94A3B8'}} };
     });
 
-    rows.push([]);
-    rows.push(["หมายเหตุ: รูปแปลนของแต่ละโค้งอยู่ในชีต \"รูปแปลน\""]);
+    function makeDiagramSvg(record) {
+      const right = record.direction !== -1;
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+      svg.setAttribute('viewBox', '0 0 580 430');
+      svg.setAttribute('width', '1160');
+      svg.setAttribute('height', '860');
 
-    const ws = XLSX.utils.aoa_to_sheet(rows);
-    ws["!merges"] = [
-      { s:{r:0,c:0}, e:{r:0,c:12} },
-      { s:{r:1,c:0}, e:{r:1,c:0} }
-    ];
-    ws["!cols"] = [
-      {wch:8},{wch:22},{wch:12},{wch:22},{wch:14},{wch:14},{wch:14},
-      {wch:14},{wch:14},{wch:14},{wch:14},{wch:16},{wch:18}
-    ];
+      const ns = 'http://www.w3.org/2000/svg';
+      const add = (tag, attrs, text) => {
+        const el = document.createElementNS(ns, tag);
+        Object.entries(attrs || {}).forEach(([k,v]) => el.setAttribute(k, v));
+        if (text !== undefined) el.textContent = text;
+        svg.appendChild(el);
+        return el;
+      };
 
-    // จัดรูปแบบตาราง
-    const headerRow = 3;
-    for (let c = 0; c < 13; c++) {
-      const cell = ws[XLSX.utils.encode_cell({r:headerRow,c})];
-      if (cell) {
-        cell.s = {
-          fill: { fgColor: { rgb: "0F172A" } },
-          font: { color: { rgb: "FFFFFF" }, bold: true },
-          alignment: { horizontal: "center", vertical: "center", wrapText: true },
-          border: {
-            top:{style:"thin",color:{rgb:"94A3B8"}},
-            bottom:{style:"thin",color:{rgb:"94A3B8"}},
-            left:{style:"thin",color:{rgb:"94A3B8"}},
-            right:{style:"thin",color:{rgb:"94A3B8"}}
-          }
-        };
+      add('rect', {x:0,y:0,width:'100%',height:'100%',fill:'#ffffff'});
+
+      const pathD = right
+        ? 'M 450 320 L 350 320 A 200 200 0 0 1 150 120 L 150 20'
+        : 'M 130 320 L 230 320 A 200 200 0 0 0 430 120 L 430 20';
+
+      // ถนนและเส้นกึ่งกลาง
+      add('path', {d:pathD, fill:'none', stroke:'#334155', 'stroke-width':45, 'stroke-linecap':'round'});
+      add('path', {d:pathD, fill:'none', stroke:'#facc15', 'stroke-width':2, 'stroke-dasharray':'12,12'});
+
+      // เส้นประกอบ PI-PC-PT / แนวสัมผัส / แนว R
+      if (right) {
+        add('polyline', {points:'350,320 150,320 150,120', fill:'none', stroke:'#ef4444', 'stroke-width':2, 'stroke-dasharray':'6,4'});
+        add('line', {x1:350,y1:120,x2:350,y2:320, stroke:'#ef4444', 'stroke-width':1.5});
+        add('line', {x1:350,y1:120,x2:150,y2:120, stroke:'#ef4444', 'stroke-width':1.5});
+        add('line', {x1:150,y1:320,x2:208.58,y2:261.42, stroke:'#ea580c', 'stroke-width':2, 'stroke-linecap':'round'});
+        add('line', {x1:150,y1:320,x2:150,y2:385, stroke:'#0284c7', 'stroke-width':2, 'stroke-dasharray':'4,4'});
+      } else {
+        add('polyline', {points:'230,320 430,320 430,120', fill:'none', stroke:'#ef4444', 'stroke-width':2, 'stroke-dasharray':'6,4'});
+        add('line', {x1:230,y1:120,x2:230,y2:320, stroke:'#ef4444', 'stroke-width':1.5});
+        add('line', {x1:230,y1:120,x2:430,y2:120, stroke:'#ef4444', 'stroke-width':1.5});
+        add('line', {x1:430,y1:320,x2:371.42,y2:261.42, stroke:'#ea580c', 'stroke-width':2, 'stroke-linecap':'round'});
+        add('line', {x1:430,y1:320,x2:430,y2:385, stroke:'#0284c7', 'stroke-width':2, 'stroke-dasharray':'4,4'});
       }
+
+      // จุดสำคัญ
+      if (right) {
+        add('circle',{cx:350,cy:120,r:6,fill:'#ef4444'});
+        add('circle',{cx:150,cy:320,r:6,fill:'#ef4444'});
+        add('circle',{cx:350,cy:320,r:5,fill:'#0284c7'});
+        add('circle',{cx:150,cy:120,r:5,fill:'#0284c7'});
+        add('circle',{cx:208.58,cy:261.42,r:4,fill:'#facc15'});
+      } else {
+        add('circle',{cx:230,cy:120,r:6,fill:'#ef4444'});
+        add('circle',{cx:430,cy:320,r:6,fill:'#ef4444'});
+        add('circle',{cx:230,cy:320,r:5,fill:'#0284c7'});
+        add('circle',{cx:430,cy:120,r:5,fill:'#0284c7'});
+        add('circle',{cx:371.42,cy:261.42,r:4,fill:'#facc15'});
+      }
+
+      const text = (x,y,str,fill,size,anchor='start') => add('text', {
+        x,y,fill,'font-size':size,'font-family':'Arial, Tahoma, sans-serif',
+        'font-weight':'bold','text-anchor':anchor,
+        'paint-order':'stroke','stroke':'#ffffff','stroke-width':3
+      }, str);
+
+      if (right) {
+        text(140,325,`PI: ${record.results.pi}`,'#ef4444',15,'end');
+        text(365,340,`PC: ${record.results.pc}`,'#0284c7',14,'start');
+        text(135,115,`PT: ${record.results.pt}`,'#0284c7',14,'end');
+        text(365,220,`R = ${record.results.r} m`,'#ef4444',15,'start');
+        text(250,340,`T = ${record.results.t}`,'#475569',13,'middle');
+        text(170,275,`E = ${record.results.e} m`,'#ea580c',13,'end');
+        text(160,380,`ระยะยิงกล้อง: ${record.results.distCamera} ม. (STA ${record.results.nextFullSta})`,'#0284c7',13,'start');
+        text(350,100,'จุดศูนย์กลาง (O)','#475569',13,'middle');
+      } else {
+        text(440,325,`PI: ${record.results.pi}`,'#ef4444',15,'start');
+        text(215,340,`PC: ${record.results.pc}`,'#0284c7',14,'end');
+        text(445,115,`PT: ${record.results.pt}`,'#0284c7',14,'start');
+        text(215,220,`R = ${record.results.r} m`,'#ef4444',15,'end');
+        text(330,340,`T = ${record.results.t}`,'#475569',13,'middle');
+        text(410,275,`E = ${record.results.e} m`,'#ea580c',13,'start');
+        text(420,380,`ระยะยิงกล้อง: ${record.results.distCamera} ม. (STA ${record.results.nextFullSta})`,'#0284c7',13,'end');
+        text(230,100,'จุดศูนย์กลาง (O)','#475569',13,'middle');
+      }
+      return svg;
     }
 
-    for (let r = 4; r < 4 + chronologicalRecords.length; r++) {
-      for (let c = 0; c < 13; c++) {
-        const cell = ws[XLSX.utils.encode_cell({r,c})];
-        if (cell) {
-          cell.s = {
-            alignment: { horizontal: "center", vertical: "center" },
-            border: {
-              top:{style:"thin",color:{rgb:"CBD5E1"}},
-              bottom:{style:"thin",color:{rgb:"CBD5E1"}},
-              left:{style:"thin",color:{rgb:"CBD5E1"}},
-              right:{style:"thin",color:{rgb:"CBD5E1"}}
-            }
-          };
-        }
-      }
-      [7,8,9,10,11,12].forEach(c => {
-        const cell = ws[XLSX.utils.encode_cell({r,c})];
-        if (cell) cell.z = "0.000";
+    function svgToPngDataUrl(svg) {
+      const xml = new XMLSerializer().serializeToString(svg);
+      const svgBlob = new Blob([xml], {type:'image/svg+xml;charset=utf-8'});
+      const url = URL.createObjectURL(svgBlob);
+
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+          try {
+            const canvas = document.createElement('canvas');
+            canvas.width = 1160;
+            canvas.height = 860;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0,0,canvas.width,canvas.height);
+            ctx.drawImage(img,0,0,canvas.width,canvas.height);
+            URL.revokeObjectURL(url);
+            resolve(canvas.toDataURL('image/png'));
+          } catch (err) {
+            URL.revokeObjectURL(url);
+            reject(err);
+          }
+        };
+        img.onerror = () => {
+          URL.revokeObjectURL(url);
+          reject(new Error('ไม่สามารถแปลงรูปโค้งเป็น PNG ได้'));
+        };
+        img.src = url;
       });
     }
 
-    XLSX.utils.book_append_sheet(wb, ws, "สรุปผล");
+    for (let i = 0; i < chronologicalRecords.length; i++) {
+      const r = chronologicalRecords[i];
+      const row = ws.addRow([
+        i + 1, r.name, r.direction === -1 ? 'โค้งซ้าย ↶' : 'โค้งขวา ↷', r.timestamp,
+        r.results.pc, r.results.pi, r.results.pt,
+        Number(r.results.r), Number(r.results.t), Number(r.results.e),
+        Number(r.results.l), Number(r.results.adj), Number(r.results.distCamera),
+        'รูปโค้ง'
+      ]);
 
-    // Sheet 2: รูปแปลน
-    const diagramRows = [
-      ["รูปแบบแปลนโค้งราบ (CURVE DIAGRAM)"],
-      ["รูปแปลนแต่ละโค้งจะถูกวางไว้ด้านล่างตามลำดับรายการ"]
-    ];
-    const wsd = XLSX.utils.aoa_to_sheet(diagramRows);
-    wsd["!cols"] = [{wch:28},{wch:80}];
-    XLSX.utils.book_append_sheet(wb, wsd, "รูปแปลน");
+      row.height = 235;
+      row.eachCell((cell, col) => {
+        cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
+        cell.border = {
+          top:{style:'thin',color:{argb:'FF94A3B8'}},
+          bottom:{style:'thin',color:{argb:'FF94A3B8'}},
+          left:{style:'thin',color:{argb:'FF94A3B8'}},
+          right:{style:'thin',color:{argb:'FF94A3B8'}}
+        };
+        if (col >= 8 && col <= 13) cell.numFmt = '0.000';
+      });
 
-    // หมายเหตุสำคัญ: SheetJS Community สร้าง XLSX ได้ดี แต่การฝังรูปภาพใน Excel
-    // ต้องใช้ส่วนเสริม/รุ่นที่รองรับ images; จึงสร้าง PNG Data URI ของ SVG
-    // และเก็บไว้ใน custom XML ไม่ได้ผลกับ Excel ทุกเวอร์ชัน
-    // ทางเลือกที่เสถียรกว่าคือสร้าง HTML .xls ที่มีรูป Base64 ฝังในเซลล์
-    // ดังนั้นสร้างรายงาน HTML Excel-compatible พร้อมรูปจริงในไฟล์เดียวแทน
-    let report = `
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<style>
-body{font-family:Arial,'Tahoma',sans-serif;margin:20px;color:#0f172a}
-h1{background:#0369a1;color:#fff;padding:14px;text-align:center}
-.info{background:#f1f5f9;padding:10px;margin-bottom:15px}
-table{border-collapse:collapse;width:100%;margin-bottom:25px}
-th,td{border:1px solid #94a3b8;padding:8px;text-align:center}
-th{background:#0f172a;color:#fff}
-.num{mso-number-format:'0.000'}
-.curve-title{background:#0369a1;color:#fff;font-size:18px;font-weight:bold;padding:10px}
-.diagram-wrap{text-align:center;padding:12px;background:#f8fafc}
-.diagram-wrap img{width:580px;height:430px;border:1px solid #cbd5e1}
-.page-break{page-break-before:always}
-</style>
-</head>
-<body>
-<div style="border:2px solid #0b2d4d;padding:12px;margin-bottom:12px"><h1 style="margin:0;background:#0b2d4d;color:#fff;padding:12px;text-align:center">H-CURVE CALCULATOR PRO</h1><div style="text-align:center;font-size:13px;font-weight:bold;margin-top:6px">รายงานสรุปผลการสำรวจและคำนวณโค้งราบ (HORIZONTAL CURVE REPORT)</div></div>
-<div class="info">โครงการงานทางวิศวกรรมภาคสนาม | จัดทำเมื่อ: ${new Date().toLocaleString('th-TH')}</div>
-<table>
-<tr>
-<th>ลำดับ</th><th>ชื่อโค้ง</th><th>ทิศทาง</th><th>วัน-เวลาสำรวจ</th>
-<th>STA PC</th><th>STA PI</th><th>STA PT</th><th>R (ม.)</th>
-<th>T (ม.)</th><th>E (ม.)</th><th>L (ม.)</th><th>ADJ (ม.)</th><th>ระยะยิงกล้อง (ม.)</th>
-</tr>`;
+      row.getCell(13).fill = { type:'pattern', pattern:'solid', fgColor:{argb:'FFF0FDF4'} };
+      row.getCell(13).font = { bold:true, color:{argb:'FF166534'} };
 
-    chronologicalRecords.forEach((r, index) => {
-      const dirTxt = r.direction === -1 ? "ซ้าย ↶" : "ขวา ↷";
-      report += `<tr>
-<td>${index+1}</td><td style="text-align:left;font-weight:bold">${escapeHtml(r.name)}</td>
-<td>${dirTxt}</td><td>${escapeHtml(r.timestamp)}</td>
-<td>${r.results.pc}</td><td>${r.results.pi}</td><td>${r.results.pt}</td>
-<td class="num">${r.results.r}</td><td class="num">${r.results.t}</td><td class="num">${r.results.e}</td>
-<td class="num">${r.results.l}</td><td class="num">${r.results.adj}</td><td class="num">${r.results.distCamera}</td>
-</tr>`;
+      // แปลงเป็น PNG ก่อนฝัง เพื่อให้เส้นถนนและเส้นประกอบแสดงใน Excel ได้ครบ
+      const pngData = await svgToPngDataUrl(makeDiagramSvg(r));
+      const imageId = workbook.addImage({
+        base64: pngData,
+        extension: 'png'
+      });
+
+      ws.addImage(imageId, {
+        tl: { col: 13, row: row.number - 1 },
+        ext: { width: 460, height: 225 }
+      });
+    }
+
+    ws.autoFilter = { from: 'A4', to: `N${ws.lastRow.number}` };
+
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
     });
 
-    report += `</table><div class="page-break"></div><h1>รูปแบบแปลนโค้งราบ</h1>`;
-
-    // ใช้ SVG ที่สร้างใหม่จากข้อมูลเดิม โดยสร้างเป็นรูปภาพฝัง Base64
-    for (const r of chronologicalRecords) {
-      const svg = createExportDiagramSVG(r);
-      const svgBase64 = "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(svg)));
-      report += `
-      <div class="curve-title">${escapeHtml(r.name)} — ${r.direction === -1 ? "โค้งซ้าย ↶" : "โค้งขวา ↷"}</div>
-      <div class="diagram-wrap">
-        <img src="${svgBase64}">
-        <p>STA PC: ${r.results.pc} | STA PI: ${r.results.pi} | STA PT: ${r.results.pt}</p>
-        <p>R = ${r.results.r} ม. | T = ${r.results.t} ม. | E = ${r.results.e} ม. | L = ${r.results.l} ม.</p>
-      </div>`;
-    }
-
-    report += `</body></html>`;
-
-    // ดาวน์โหลดเป็น .xls เพื่อให้ Excel เปิดเป็นรายงานเดียวที่มีทั้งตารางและรูป
-    const blob = new Blob([report], {type:"application/vnd.ms-excel;charset=utf-8;"});
-    const a = document.createElement("a");
+    const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = `SURVEY_REPORT_WITH_DIAGRAM_${new Date().toISOString().slice(0,10)}.xls`;
+    a.download = `SURVEY_REPORT_${new Date().toISOString().slice(0,10)}.xlsx`;
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-  }
-
-  function escapeHtml(str) {
-    return String(str).replace(/[&<>"']/g, ch => ({
-      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
-    }[ch]));
-  }
-
-  function createExportDiagramSVG(r) {
-    const dir = r.direction;
-    const R = parseFloat(r.results.r);
-    const T = parseFloat(r.results.t);
-    const E = parseFloat(r.results.e);
-    const dist = parseFloat(r.results.distCamera);
-
-    if (dir === 1) {
-      return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 430">
-        <rect width="100%" height="100%" fill="#ffffff"/>
-        <path d="M 450 320 L 350 320 A 200 200 0 0 1 150 120 L 150 20"
-          fill="none" stroke="#334155" stroke-width="45" stroke-linecap="round"/>
-        <path d="M 450 320 L 350 320 A 200 200 0 0 1 150 120 L 150 20"
-          fill="none" stroke="#facc15" stroke-width="2" stroke-dasharray="12,12"/>
-        <polyline points="350,320 150,320 150,120" fill="none" stroke="#ef4444" stroke-width="2" stroke-dasharray="6,4"/>
-        <line x1="350" y1="120" x2="350" y2="320" stroke="#ef4444" stroke-width="1.5"/>
-        <line x1="350" y1="120" x2="150" y2="120" stroke="#ef4444" stroke-width="1.5"/>
-        <line x1="150" y1="320" x2="208.58" y2="261.42" stroke="#ea580c" stroke-width="2"/>
-        <circle cx="350" cy="120" r="6" fill="#ef4444"/>
-        <circle cx="150" cy="320" r="6" fill="#ef4444"/>
-        <circle cx="350" cy="320" r="5" fill="#0284c7"/>
-        <circle cx="150" cy="120" r="5" fill="#0284c7"/>
-        <text x="140" y="325" text-anchor="end" font-size="15" font-weight="bold" fill="#ef4444">PI: ${r.results.pi}</text>
-        <text x="365" y="340" font-size="14" font-weight="bold" fill="#0284c7">PC: ${r.results.pc}</text>
-        <text x="135" y="115" text-anchor="end" font-size="14" font-weight="bold" fill="#0284c7">PT: ${r.results.pt}</text>
-        <text x="365" y="220" font-size="15" font-weight="bold" fill="#ef4444">R = ${R.toFixed(3)} m</text>
-        <text x="250" y="340" text-anchor="middle" font-size="13" font-weight="bold" fill="#475569">T = ${T.toFixed(3)} m</text>
-        <text x="170" y="275" text-anchor="end" font-size="13" font-weight="bold" fill="#ea580c">E = ${E.toFixed(3)} m</text>
-        <text x="350" y="100" text-anchor="middle" font-size="13" font-weight="bold" fill="#475569">จุดศูนย์กลาง (O)</text>
-        <text x="160" y="390" font-size="13" font-weight="bold" fill="#0284c7">ระยะยิงกล้อง: ${dist.toFixed(3)} ม.</text>
-      </svg>`;
-    }
-
-    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 430">
-      <rect width="100%" height="100%" fill="#ffffff"/>
-      <path d="M 130 320 L 230 320 A 200 200 0 0 0 430 120 L 430 20"
-        fill="none" stroke="#334155" stroke-width="45" stroke-linecap="round"/>
-      <path d="M 130 320 L 230 320 A 200 200 0 0 0 430 120 L 430 20"
-        fill="none" stroke="#facc15" stroke-width="2" stroke-dasharray="12,12"/>
-      <polyline points="230,320 430,320 430,120" fill="none" stroke="#ef4444" stroke-width="2" stroke-dasharray="6,4"/>
-      <line x1="230" y1="120" x2="230" y2="320" stroke="#ef4444" stroke-width="1.5"/>
-      <line x1="230" y1="120" x2="430" y2="120" stroke="#ef4444" stroke-width="1.5"/>
-      <line x1="430" y1="320" x2="371.42" y2="261.42" stroke="#ea580c" stroke-width="2"/>
-      <circle cx="230" cy="120" r="6" fill="#ef4444"/>
-      <circle cx="430" cy="320" r="6" fill="#ef4444"/>
-      <circle cx="230" cy="320" r="5" fill="#0284c7"/>
-      <circle cx="430" cy="120" r="5" fill="#0284c7"/>
-      <text x="440" y="325" font-size="15" font-weight="bold" fill="#ef4444">PI: ${r.results.pi}</text>
-      <text x="215" y="340" text-anchor="end" font-size="14" font-weight="bold" fill="#0284c7">PC: ${r.results.pc}</text>
-      <text x="445" y="115" font-size="14" font-weight="bold" fill="#0284c7">PT: ${r.results.pt}</text>
-      <text x="215" y="220" text-anchor="end" font-size="15" font-weight="bold" fill="#ef4444">R = ${R.toFixed(3)} m</text>
-      <text x="330" y="340" text-anchor="middle" font-size="13" font-weight="bold" fill="#475569">T = ${T.toFixed(3)} m</text>
-      <text x="410" y="275" font-size="13" font-weight="bold" fill="#ea580c">E = ${E.toFixed(3)} m</text>
-      <text x="230" y="100" text-anchor="middle" font-size="13" font-weight="bold" fill="#475569">จุดศูนย์กลาง (O)</text>
-      <text x="420" y="390" text-anchor="end" font-size="13" font-weight="bold" fill="#0284c7">ระยะยิงกล้อง: ${dist.toFixed(3)} ม.</text>
-    </svg>`;
   }
 
   document.getElementById('record_count').innerText = getStoredRecords().length;
