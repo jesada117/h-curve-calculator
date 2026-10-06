@@ -602,7 +602,7 @@
     ws.getCell('A2').alignment = { horizontal: 'center' };
 
     ws.mergeCells('A3:N3');
-    ws.getCell('A3').value = 'รูปโค้งของแต่ละโค้งถูกฝังลงในเซลล์โดยอัตโนมัติ และจัดขนาดให้อยู่ภายในช่องรูปโค้ง';
+    ws.getCell('A3').value = 'รายงานผลการคำนวณโค้งราบ พร้อมรูปโค้งประกอบแต่ละรายการ';
     ws.getCell('A3').font = { italic: true, size: 10, color: { argb: 'FF64748B' } };
     ws.getCell('A3').alignment = { horizontal: 'center' };
 
@@ -765,12 +765,17 @@
         extension: 'png'
       });
 
-      // ฝังรูปโค้งให้กินพื้นที่เฉพาะเซลล์ N ของแถวนั้น
-      // ใช้ Two-Cell Anchor เต็มช่วงเซลล์ เพื่อให้ย้าย/ปรับขนาดตามเซลล์
+      // ช่อง N เป็นช่องรูปโดยเฉพาะ: ไม่ใส่ข้อความ/placeholder ในเซลล์
+      row.getCell(14).value = null;
+      row.getCell(14).alignment = { horizontal: 'center', vertical: 'middle' };
+
+      // วางรูปให้อยู่ภายในเซลล์ N แบบมีขอบเล็กน้อย
+      // ขนาด 260x190 px เหมาะกับ Column Width 40 และ Row Height 210
+      // ใช้ oneCell anchor เพื่อให้รูปติดกับเซลล์และไม่ลอยไปชนแถวอื่น
       ws.addImage(imageId, {
-        tl: { col: 13, row: row.number - 1 },
-        br: { col: 14, row: row.number },
-        editAs: 'twoCell'
+        tl: { col: 13.035, row: row.number - 0.965 },
+        ext: { width: 260, height: 190 },
+        editAs: 'oneCell'
       });
     }
 
