@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>H-CURVE CALCULATOR PRO</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0284c7;
+      --primary-hover: #0369a1;
+      --card-bg: #ffffff;
+      --border: #cbd5e1;
+      --text-main: #0f172a;
+    }
+
+    * { box-sizing: border-box; font-family: 'Prompt', sans-serif; margin: 0; padding: 0; }
+    
+    body {
+      background-color: #f1f5f9;
+      background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+      background-size: 20px 20px;
+      color: var(--text-main);
+      padding: 16px 12px 60px;
+      min-height: 100vh;
+    }
+
+    .container { max-width: 620px; margin: 0 auto; }
+
+    /* Header */
+    .app-header { text-align: center; margin-bottom: 16px; }
+    .survey-badge {
+      display: inline-block; background: #e0f2fe; border: 1px solid #7dd3fc;
+      color: #0284c7; font-size: 0.75rem; font-weight: 800; padding: 4px 14px;
+      border-radius: 20px; margin-bottom: 6px; letter-spacing: 0.5px;
+    }
+    .app-header h1 { font-size: 1.45rem; font-weight: 800; color: #0f172a; }
+
+    /* Tabs */
+    .nav-tabs {
+      display: flex; gap: 8px; background: #ffffff; padding: 6px;
+      border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); margin-bottom: 16px; border: 1px solid #e2e8f0;
+    }
+    .tab-btn {
+      flex: 1; background: transparent; border: none; color: #64748b;
+      padding: 10px 4px; font-size: 0.85rem; font-weight: 700; border-radius: 8px;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .tab-btn.active { background: var(--primary); color: #ffffff; box-shadow: 0 4px 10px rgba(2, 132, 199, 0.3); }
+    .badge-count { background: #ef4444; color: white; padding: 2px 6px; border-radius: 10px; font-size: 0.7rem; margin-left: 4px; }
+
+    /* Cards */
+    .card {
+      background: var(--card-bg); border-radius: 14px; padding: 18px;
+      margin-bottom: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    }
+    .card-title { font-size: 1rem; font-weight: 800; color: #0f172a; margin-bottom: 14px; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px; }
+
+    /* Forms */
+    .form-group { margin-bottom: 12px; }
+    label { display: block; font-size: 0.82rem; font-weight: 700; color: #475569; margin-bottom: 5px; }
+    input, select {
+      width: 100%; height: 44px; padding: 0 12px; border: 1.5px solid var(--border);
+      border-radius: 8px; font-size: 0.95rem; font-family: 'JetBrains Mono', 'Prompt', sans-serif;
+      outline: none; transition: 0.2s;
+    }
+    input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15); }
+    .sta-grid { display: grid; grid-template-columns: 110px 1fr; gap: 8px; }
+    .dms-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    .dms-grid input { text-align: center; }
+
+    /* Buttons */
+    .btn {
+      width: 100%; height: 46px; background: var(--primary); color: white;
+      border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 700;
+      cursor: pointer; transition: 0.2s; margin-top: 6px;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn-calc { background: #0d9488; }
+    .btn-save { background: #16a34a; box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3); }
+
+    /* Results */
+    .calc-d-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; margin: 14px 0; text-align: center; }
+    .calc-d-box .val { font-family: 'JetBrains Mono', monospace; font-size: 1.6rem; font-weight: 800; color: #0284c7; }
+    
+    .res-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 14px; }
+    .res-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 10px; }
+    .res-title { font-size: 0.72rem; font-weight: 600; color: #64748b; }
+    .res-val { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; font-weight: 800; color: #0f172a; margin-top: 2px; }
+    
+    .survey-box { grid-column: span 2; background: #0f172a; border-radius: 8px; padding: 14px; color: white; text-align: center; }
+    .survey-box .res-val { color: #2dd4bf; font-size: 1.65rem; margin: 4px 0; }
+
+    /* Diagram Area */
+    .diagram-container {
+      background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px;
+      padding: 6px; position: relative; overflow: hidden;
+    }
+    svg { display: block; width: 100%; height: auto; }
+    
+    .svg-text-red { fill: #ef4444; font-size: 15px; font-weight: 900; font-family: 'JetBrains Mono', sans-serif; paint-order: stroke; stroke: #ffffff; stroke-width: 4px; stroke-linecap: butt; }
+    .svg-text-blue { fill: #0284c7; font-size: 14px; font-weight: 900; font-family: 'JetBrains Mono', sans-serif; paint-order: stroke; stroke: #ffffff; stroke-width: 4px; }
+    .svg-text-orange { fill: #ea580c; font-size: 13px; font-weight: 900; font-family: 'JetBrains Mono', sans-serif; paint-order: stroke; stroke: #ffffff; stroke-width: 4px; }
+    .svg-text-gray { fill: #475569; font-size: 13px; font-weight: 800; font-family: 'Prompt', sans-serif; paint-order: stroke; stroke: #ffffff; stroke-width: 3px; }
+
+    .page-section { display: none; }
+    .page-section.active { display: block; }
+
+    /* History List */
+    .history-card { background: #ffffff; border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 10px; }
+    .history-header { display: flex; justify-content: space-between; border-bottom: 1px solid #f1f5f9; padding-bottom: 6px; margin-bottom: 8px; }
+    .history-title { font-weight: 800; color: #0284c7; font-size: 0.95rem; }
+    .history-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; font-size: 0.78rem; margin-bottom: 8px; }
+    .history-item { background: #f8fafc; padding: 5px; border-radius: 6px; border: 1px solid #f1f5f9; }
+    .history-item span { color: #64748b; font-size: 0.68rem; font-weight: 600; display: block; }
+    .history-item b { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: #0f172a; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  
+  <div class="app-header">
+    <div class="survey-badge">ENGINEERING SURVEY TOOL</div>
+    <h1>H-CURVE CALCULATOR PRO</h1>
+  </div>
+
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="switchPage('calc')">📐 คำนวณค่า</button>
+    <button class="tab-btn" onclick="switchPage('diagram')">🛣️ รูปแบบแปลน</button>
+    <button class="tab-btn" onclick="switchPage('history')">📁 ประวัติ<span class="badge-count" id="record_count">0</span></button>
+  </div>
+
+  <!-- หน้าที่ 1: คำนวณค่า -->
+  <div id="page_calc" class="page-section active">
+    <div class="card">
+      <div class="card-title">1. ข้อมูลสำรวจภาคสนาม</div>
+      
+      <div class="form-group">
+        <label>ชื่อโค้ง (เช่น โค้งที่ 1)</label>
+        <input type="text" id="curve_name" placeholder="ระบุชื่อโค้ง">
+      </div>
+
+      <div class="form-group">
+        <label>ทิศทางโค้งถนน (Curve Direction)</label>
+        <select id="curve_dir">
+          <option value="1">ถนนโค้งขวา (Curve Right ↷)</option>
+          <option value="-1">ถนนโค้งซ้าย (Curve Left ↶)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>STA. PI (กม. + เมตร)</label>
+        <div class="sta-grid">
+          <select id="sta_km">
+            <option value="0" selected>0 +</option>
+            <option value="1000">1 +</option>
+            <option value="2000">2 +</option>
+            <option value="3000">3 +</option>
+            <option value="4000">4 +</option>
+            <option value="5000">5 +</option>
+            <option value="6000">6 +</option>
+            <option value="7000">7 +</option>
+          </select>
+          <input type="number" step="any" id="sta_m" placeholder="เช่น 12.30">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>ระยะห่างหน้างาน E (Field External)</label>
+        <input type="number" step="any" id="e_field" placeholder="เช่น 0.902">
+      </div>
+
+      <div class="form-group">
+        <label>มุมเบี่ยงเบน DELTA A (องศา - ลิปดา - ฟิลิปดา)</label>
+        <div class="dms-grid">
+          <input type="number" id="deg" placeholder="°">
+          <input type="number" id="min" placeholder="'">
+          <input type="number" step="any" id="sec" placeholder="''">
+        </div>
+      </div>
+
+      <button class="btn" onclick="calculateTheoreticalD()">1. คำนวณหา Degree of Curve (D)</button>
+
+      <div id="calc_d_area" style="display: none;">
+        <div class="calc-d-box">
+          <div style="font-size:0.75rem; color:#64748b; font-weight:700;">D ทฤษฎี (THEORETICAL)</div>
+          <div class="val" id="d_calc_val">0.000</div>
+        </div>
+
+        <div class="form-group">
+          <label>ป้อนค่า D ที่ต้องการใช้งานจริง (INPUT D)</label>
+          <input type="number" step="any" id="d_input" placeholder="ใส่เลข D ที่เลือกใช้จริง">
+        </div>
+
+        <button class="btn btn-calc" onclick="calculateFinalCurve()">2. คำนวณองค์ประกอบโค้งจริง</button>
+      </div>
+    </div>
+
+    <div class="card" id="results_area" style="display: none;">
+      <div class="card-title">2. ผลลัพธ์องค์ประกอบโค้ง</div>
+      
+      <div class="res-grid">
+        <div class="res-box"><div class="res-title">รัศมีความโค้ง (R)</div><div class="res-val" id="res_r">-</div></div>
+        <div class="res-box"><div class="res-title">ระยะสัมผัส (T)</div><div class="res-val" id="res_t">-</div></div>
+        <div class="res-box" style="background:#fff7ed;"><div class="res-title">ระยะภายนอกจริง (E)</div><div class="res-val" id="res_e" style="color:#ea580c;">-</div></div>
+        <div class="res-box" style="background:#fef2f2;"><div class="res-title">ความยาวโค้ง (L)</div><div class="res-val" id="res_l" style="color:#dc2626;">-</div></div>
+        <div class="res-box"><div class="res-title">ระยะปรับแก้ (ADJ)</div><div class="res-val" id="res_adj">-</div></div>
+        <div class="res-box" style="grid-column:span 2; background:#f0fdf4; border-color:#bbf7d0;">
+          <div style="display:flex; justify-content:space-between;">
+            <div><div class="res-title">เริ่มโค้ง (STA PC)</div><div class="res-val" id="res_pc" style="color:#16a34a;">-</div></div>
+            <div style="text-align:right;"><div class="res-title">สิ้นสุดโค้ง (STA PT)</div><div class="res-val" id="res_pt" style="color:#16a34a;">-</div></div>
+          </div>
+        </div>
+        
+        <div class="survey-box">
+          <div style="font-size:0.82rem; color:#94a3b8; font-weight:700;">⌖ STA เต็มถัดไป (ช่วง 25 ม.): <span style="color:white;" id="res_next_full_sta">-</span></div>
+          <div style="font-size:0.75rem; color:#38bdf8; margin-top:6px;">(วัดระยะดึงเทปออกจากตัวกล้อง)</div>
+          <div class="res-val" id="res_dist_pi_to_full">-</div>
+        </div>
+      </div>
+
+      <button class="btn btn-save" onclick="saveSurveyRecord()">💾 บันทึกข้อมูลโค้งนี้</button>
+    </div>
+  </div>
+
+  <!-- หน้าที่ 2: รูปแบบแปลน -->
+  <div id="page_diagram" class="page-section">
+    <div class="card">
+      <div class="card-title">🛣️ รูปโค้ง (Curve Diagram)</div>
+      <p style="font-size: 0.82rem; color: #64748b; margin-bottom: 10px;" id="diagram_status">
+        กรุณาคำนวณโค้งในหน้า "คำนวณค่า" ก่อน เพื่อแสดงรูปแบบแปลนที่นี่
+      </p>
+
+      <!-- ปุ่มดาวน์โหลดรูปภาพโดยตรง คมชัด 100% -->
+      <button id="btn_save_png" onclick="downloadDiagramPNG()" style="display:none; width:100%; margin-bottom:10px; background:#0284c7; color:white; border:none; padding:10px; border-radius:8px; font-weight:700; cursor:pointer; font-size:0.88rem;">
+        📥 ดาวน์โหลดรูปโค้ง (.PNG ความคมชัดสูง)
+      </button>
+
+      <div class="diagram-container" id="diagram_render_area" style="display: none;"></div>
+    </div>
+  </div>
+
+  <!-- หน้าที่ 3: ประวัติข้อมูล -->
+  <div id="page_history" class="page-section">
+    <div class="card">
+      <div class="card-title" style="display:flex; justify-content:space-between; align-items:center;">
+        📁 ฐานข้อมูลสำรวจ
+        <button onclick="exportToCleanExcel()" style="background:#16a34a; color:white; border:none; padding:6px 14px; border-radius:6px; font-weight:700; cursor:pointer; font-size:0.82rem;">📥 ส่งออกรายงาน Excel</button>
+      </div>
+      <div id="records_container"></div>
+      <button onclick="clearAllRecords()" style="width:100%; background:#fef2f2; color:#dc2626; border:1px solid #fecaca; padding:10px; border-radius:8px; font-weight:700; margin-top:10px; cursor:pointer; font-size:0.85rem;">🗑 ล้างข้อมูลทั้งหมด</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  let A_deg = 0;
+  let currentCalculation = null;
+
+  function switchPage(page) {
+    document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+    
+    if (page === 'calc') {
+      document.querySelectorAll('.tab-btn')[0].classList.add('active');
+      document.getElementById('page_calc').classList.add('active');
+    } else if (page === 'diagram') {
+      document.querySelectorAll('.tab-btn')[1].classList.add('active');
+      document.getElementById('page_diagram').classList.add('active');
+    } else if (page === 'history') {
+      document.querySelectorAll('.tab-btn')[2].classList.add('active');
+      document.getElementById('page_history').classList.add('active');
+      renderHistoryList();
+    }
+  }
+
+  function formatStation(val) {
+    if (isNaN(val)) return "-";
+    const sign = val < 0 ? "-" : "";
+    const absVal = Math.abs(val);
+    const km = Math.floor(absVal / 1000);
+    const m = (absVal % 1000).toFixed(3);
+    return `${sign}${km}+${m.padStart(7, '0')}`;
+  }
+
+  function getAngleDecimal() {
+    const d = parseFloat(document.getElementById('deg').value) || 0;
+    const m = parseFloat(document.getElementById('min').value) || 0;
+    const s = parseFloat(document.getElementById('sec').value) || 0;
+    return d + (m / 60) + (s / 3600);
+  }
+
+  function calculateTheoreticalD() {
+    A_deg = getAngleDecimal();
+    const E_field = parseFloat(document.getElementById('e_field').value);
+    if (!A_deg || isNaN(E_field)) return alert("⚠️️ กรุณาป้อนค่า E และมุมให้ครบถ้วน");
+
+    const A_rad = A_deg * (Math.PI / 180);
+    const T = E_field / Math.tan(A_rad / 4);
+    const R = T / Math.tan(A_rad / 2);
+    const D = 5729.578 / R;
+
+    document.getElementById('d_calc_val').innerText = D.toFixed(3);
+    document.getElementById('d_input').value = Math.round(D);
+    document.getElementById('calc_d_area').style.display = 'block';
+  }
+
+  function calculateFinalCurve() {
+    const D = parseFloat(document.getElementById('d_input').value);
+    const km = parseFloat(document.getElementById('sta_km').value) || 0;
+    const m = parseFloat(document.getElementById('sta_m').value) || 0;
+    const dir = parseInt(document.getElementById('curve_dir').value);
+    const P = km + m;
+
+    if (!D) return alert("⚠️ กรุณาใส่ค่า D ที่จะใช้จริง");
+
+    const A_rad = A_deg * (Math.PI / 180);
+    const R = 5729.578 / D;
+    const T = R * Math.tan(A_rad / 2);
+    let E = T * Math.tan(A_rad / 4);
+    E = Math.round(E * 1000) / 1000;
+    
+    const L = (100 * A_deg) / D;
+    const B = P - T;
+    const C = B + L;
+    const X = (2 * T) - L;
+
+    const nextFullSta = Math.ceil((P + 0.0001) / 25) * 25;
+    const distFromPi = (nextFullSta - P) + X;
+
+    document.getElementById('res_r').innerText = R.toFixed(3) + " ม.";
+    document.getElementById('res_t').innerText = T.toFixed(3) + " ม.";
+    document.getElementById('res_e').innerText = E.toFixed(3) + " ม.";
+    document.getElementById('res_l').innerText = L.toFixed(3) + " ม.";
+    document.getElementById('res_pc').innerText = formatStation(B);
+    document.getElementById('res_pt').innerText = formatStation(C);
+    document.getElementById('res_adj').innerText = X.toFixed(3) + " ม.";
+    document.getElementById('res_next_full_sta').innerText = formatStation(nextFullSta);
+    document.getElementById('res_dist_pi_to_full').innerText = distFromPi.toFixed(3) + " ม.";
+    document.getElementById('results_area').style.display = 'block';
+
+    currentCalculation = {
+      id: Date.now(),
+      name: document.getElementById('curve_name').value.trim() || `โค้ง STA ${formatStation(P)}`,
+      timestamp: new Date().toLocaleString('th-TH'),
+      direction: dir,
+      results: {
+        pi: formatStation(P), pc: formatStation(B), pt: formatStation(C),
+        r: R.toFixed(3), t: T.toFixed(3), e: E.toFixed(3), l: L.toFixed(3), adj: X.toFixed(3),
+        nextFullSta: formatStation(nextFullSta), distCamera: distFromPi.toFixed(3)
+      }
+    };
+
+    // ไดอะแกรมโค้ง (ไม่มีลูกศร และไม่มี STA เริ่ม 0+000)
+    let svgContent = '';
+    if (dir === 1) { 
+      // โค้งขวา (PI อยู่ซ้าย)
+      svgContent = `
+        <svg id="survey_svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 430" width="100%" height="100%">
+          <defs><pattern id="dotBg" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.5" fill="#e2e8f0"/></pattern></defs>
+          <rect width="100%" height="100%" fill="url(#dotBg)"/>
+          
+          <path d="M 450 320 L 350 320 A 200 200 0 0 1 150 120 L 150 20" fill="none" stroke="#334155" stroke-width="45" stroke-linecap="round"/>
+          <path d="M 450 320 L 350 320 A 200 200 0 0 1 150 120 L 150 20" fill="none" stroke="#facc15" stroke-width="2" stroke-dasharray="12,12"/>
+          
+          <polyline points="350,320 150,320 150,120" fill="none" stroke="#ef4444" stroke-width="2" stroke-dasharray="6,4"/>
+          <line x1="350" y1="120" x2="350" y2="320" stroke="#ef4444" stroke-width="1.5"/>
+          <line x1="350" y1="120" x2="150" y2="120" stroke="#ef4444" stroke-width="1.5"/>
+
+          <!-- เส้น E ลากแนวทแยงเข้าโค้ง -->
+          <line x1="150" y1="320" x2="208.58" y2="261.42" stroke="#ea580c" stroke-width="2" stroke-linecap="round"/>
+
+          <!-- เส้นวัดระยะกล้องไป STA เต็ม (ไม่มีลูกศร) -->
+          <line x1="150" y1="320" x2="150" y2="385" stroke="#0284c7" stroke-width="2" stroke-dasharray="4,4"/>
+
+          <circle cx="350" cy="120" r="6" fill="#ef4444"/>
+          <circle cx="150" cy="320" r="6" fill="#ef4444"/>
+          <circle cx="350" cy="320" r="5" fill="#0284c7"/>
+          <circle cx="150" cy="120" r="5" fill="#0284c7"/>
+          <circle cx="208.58" cy="261.42" r="4" fill="#facc15"/>
+
+          <text x="140" y="325" class="svg-text-red" text-anchor="end">PI: ${formatStation(P)}</text>
+          <text x="365" y="340" class="svg-text-blue" text-anchor="start">PC: ${formatStation(B)}</text>
+          <text x="135" y="115" class="svg-text-blue" text-anchor="end">PT: ${formatStation(C)}</text>
+          
+          <text x="365" y="220" class="svg-text-red" text-anchor="start">R = ${R.toFixed(3)} m</text>
+          <text x="250" y="340" class="svg-text-gray" text-anchor="middle">T = ${T.toFixed(3)}</text>
+          <text x="170" y="275" class="svg-text-orange" text-anchor="end">E = ${E.toFixed(3)} m</text>
+          
+          <text x="160" y="380" fill="#0284c7" font-size="13" font-family="Prompt" font-weight="bold" paint-order="stroke" stroke="#ffffff" stroke-width="3">ระยะยิงกล้อง: ${distFromPi.toFixed(3)} ม. (STA ${formatStation(nextFullSta)})</text>
+          <text x="350" y="100" class="svg-text-gray" text-anchor="middle">จุดศูนย์กลาง (O)</text>
+        </svg>`;
+    } else {
+      // โค้งซ้าย (PI อยู่ขวา)
+      svgContent = `
+        <svg id="survey_svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 430" width="100%" height="100%">
+          <defs><pattern id="dotBg" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.5" fill="#e2e8f0"/></pattern></defs>
+          <rect width="100%" height="100%" fill="url(#dotBg)"/>
+          
+          <path d="M 130 320 L 230 320 A 200 200 0 0 0 430 120 L 430 20" fill="none" stroke="#334155" stroke-width="45" stroke-linecap="round"/>
+          <path d="M 130 320 L 230 320 A 200 200 0 0 0 430 120 L 430 20" fill="none" stroke="#facc15" stroke-width="2" stroke-dasharray="12,12"/>
+          
+          <polyline points="230,320 430,320 430,120" fill="none" stroke="#ef4444" stroke-width="2" stroke-dasharray="6,4"/>
+          <line x1="230" y1="120" x2="230" y2="320" stroke="#ef4444" stroke-width="1.5"/>
+          <line x1="230" y1="120" x2="430" y2="120" stroke="#ef4444" stroke-width="1.5"/>
+
+          <!-- เส้น E ลากแนวทแยงเข้าโค้ง -->
+          <line x1="430" y1="320" x2="371.42" y2="261.42" stroke="#ea580c" stroke-width="2" stroke-linecap="round"/>
+
+          <!-- เส้นวัดระยะกล้องไป STA เต็ม (ไม่มีลูกศร) -->
+          <line x1="430" y1="320" x2="430" y2="385" stroke="#0284c7" stroke-width="2" stroke-dasharray="4,4"/>
+
+          <circle cx="230" cy="120" r="6" fill="#ef4444"/>
+          <circle cx="430" cy="320" r="6" fill="#ef4444"/>
+          <circle cx="230" cy="320" r="5" fill="#0284c7"/>
+          <circle cx="430" cy="120" r="5" fill="#0284c7"/>
+          <circle cx="371.42" cy="261.42" r="4" fill="#facc15"/>
+
+          <text x="440" y="325" class="svg-text-red" text-anchor="start">PI: ${formatStation(P)}</text>
+          <text x="215" y="340" class="svg-text-blue" text-anchor="end">PC: ${formatStation(B)}</text>
+          <text x="445" y="115" class="svg-text-blue" text-anchor="start">PT: ${formatStation(C)}</text>
+          
+          <text x="215" y="220" class="svg-text-red" text-anchor="end">R = ${R.toFixed(3)} m</text>
+          <text x="330" y="340" class="svg-text-gray" text-anchor="middle">T = ${T.toFixed(3)}</text>
+          <text x="410" y="275" class="svg-text-orange" text-anchor="start">E = ${E.toFixed(3)} m</text>
+          
+          <text x="420" y="380" fill="#0284c7" font-size="13" font-family="Prompt" font-weight="bold" text-anchor="end" paint-order="stroke" stroke="#ffffff" stroke-width="3">ระยะยิงกล้อง: ${distFromPi.toFixed(3)} ม. (STA ${formatStation(nextFullSta)})</text>
+          <text x="230" y="100" class="svg-text-gray" text-anchor="middle">จุดศูนย์กลาง (O)</text>
+        </svg>`;
+    }
+
+    document.getElementById('diagram_status').innerHTML = `รูปโค้งสำหรับ: <strong style="color:#0f172a;">${document.getElementById('curve_name').value || 'โค้งล่าสุด'}</strong>`;
+    document.getElementById('diagram_render_area').innerHTML = svgContent;
+    document.getElementById('diagram_render_area').style.display = 'block';
+    document.getElementById('btn_save_png').style.display = 'block';
+
+    switchPage('diagram');
+  }
+
+  function getStoredRecords() {
+    const raw = localStorage.getItem('survey_hcurve_records');
+    return raw ? JSON.parse(raw) : [];
+  }
+
+  function saveSurveyRecord() {
+    if (!currentCalculation) return alert("⚠️ กรุณาคำนวณโค้งก่อนทำการบันทึก");
+    const records = getStoredRecords();
+    records.unshift(currentCalculation);
+    localStorage.setItem('survey_hcurve_records', JSON.stringify(records));
+    document.getElementById('record_count').innerText = records.length;
+    alert("✅ บันทึกข้อมูลโค้งสำเร็จ!");
+  }
+
+  function renderHistoryList() {
+    const records = getStoredRecords();
+    document.getElementById('record_count').innerText = records.length;
+    const container = document.getElementById('records_container');
+
+    if (records.length === 0) {
+      container.innerHTML = `<div style="text-align:center; padding:30px; color:#94a3b8;">ยังไม่มีประวัติการบันทึก</div>`;
+      return;
+    }
+
+    let html = '';
+    records.forEach((rec) => {
+      const dirTxt = rec.direction === -1 ? "เลี้ยวซ้าย ↶" : "เลี้ยวขวา ↷";
+      html += `
+        <div class="history-card">
+          <div class="history-header">
+            <div>
+              <div class="history-title">${rec.name} <span style="font-size:0.7rem; background:#e0f2fe; color:#0284c7; padding:2px 6px; border-radius:4px;">${dirTxt}</span></div>
+            </div>
+            <button onclick="deleteRecord(${rec.id})" style="background:#fee2e2; color:#dc2626; border:none; padding:3px 8px; border-radius:5px; font-weight:700; cursor:pointer; font-size:0.75rem;">ลบ</button>
+          </div>
+          <div class="history-grid">
+            <div class="history-item"><span>STA PC</span><b>${rec.results.pc}</b></div>
+            <div class="history-item"><span>STA PI</span><b>${rec.results.pi}</b></div>
+            <div class="history-item"><span>STA PT</span><b>${rec.results.pt}</b></div>
+            <div class="history-item"><span>รัศมี R</span><b>${rec.results.r} ม.</b></div>
+            <div class="history-item"><span>ระยะ L</span><b>${rec.results.l} ม.</b></div>
+            <div class="history-item"><span>ปรับแก้ ADJ</span><b>${rec.results.adj} ม.</b></div>
+          </div>
+        </div>`;
+    });
+    container.innerHTML = html;
+  }
+
+  function deleteRecord(id) {
+    if (!confirm("ต้องการลบข้อมูลโค้งนี้หรือไม่?")) return;
+    let records = getStoredRecords().filter(r => r.id !== id);
+    localStorage.setItem('survey_hcurve_records', JSON.stringify(records));
+    renderHistoryList();
+  }
+
+  function clearAllRecords() {
+    if (!confirm("⚠️ ยืนยันการล้างประวัติข้อมูลทั้งหมด?")) return;
+    localStorage.removeItem('survey_hcurve_records');
+    renderHistoryList();
+  }
+
+  // ดาวน์โหลดรูปแปลนความละเอียดสูง (.PNG)
+  function downloadDiagramPNG() {
+    const svg = document.getElementById('survey_svg');
+    if (!svg) return alert("ไม่พบข้อมูลแปลน");
+
+    const serializer = new XMLSerializer();
+    const svgStr = serializer.serializeToString(svg);
+    const canvas = document.createElement('canvas');
+    canvas.width = 1160;
+    canvas.height = 860;
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+    const svgBlob = new Blob([svgStr], {type: 'image/svg+xml;charset=utf-8'});
+    const url = URL.createObjectURL(svgBlob);
+
+    img.onload = function() {
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+      URL.revokeObjectURL(url);
+      
+      const a = document.createElement('a');
+      a.download = `CURVE_DIAGRAM_${new Date().toISOString().slice(0,10)}.png`;
+      a.href = canvas.toDataURL('image/png');
+      a.click();
+    };
+    img.src = url;
+  }
+
+  // ส่งออกรายงาน Excel พร้อมรูปโค้งของแต่ละโค้ง
+  async function exportToCleanExcel() {
+    const records = getStoredRecords();
+    if (records.length === 0) return alert("ไม่มีข้อมูลให้ส่งออก");
+
+    // โหลด ExcelJS ครั้งแรกที่กด Export
+    if (!window.ExcelJS) {
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js';
+      script.onload = () => exportToCleanExcel();
+      script.onerror = () => alert("ไม่สามารถโหลดระบบ Excel ได้ กรุณาตรวจสอบอินเทอร์เน็ตแล้วลองใหม่");
+      document.head.appendChild(script);
+      return;
+    }
+
+    const chronologicalRecords = records.slice().reverse();
+    const workbook = new ExcelJS.Workbook();
+    workbook.creator = 'H-CURVE CALCULATOR PRO';
+    workbook.created = new Date();
+
+    const ws = workbook.addWorksheet('Curve Report');
+    ws.views = [{ state: 'frozen', ySplit: 4 }];
+    ws.columns = [
+      { header: 'ลำดับ', key: 'no', width: 9 },
+      { header: 'ชื่อโค้ง', key: 'name', width: 22 },
+      { header: 'โค้ง', key: 'direction', width: 14 },
+      { header: 'วัน-เวลาสำรวจ', key: 'timestamp', width: 23 },
+      { header: 'STA PC', key: 'pc', width: 15 },
+      { header: 'STA PI', key: 'pi', width: 15 },
+      { header: 'STA PT', key: 'pt', width: 15 },
+      { header: 'รัศมี R (ม.)', key: 'r', width: 14 },
+      { header: 'สัมผัส T (ม.)', key: 't', width: 14 },
+      { header: 'ภายนอก E (ม.)', key: 'e', width: 14 },
+      { header: 'ความยาว L (ม.)', key: 'l', width: 14 },
+      { header: 'ปรับแก้ ADJ (ม.)', key: 'adj', width: 16 },
+      { header: 'ระยะยิงกล้อง (ม.)', key: 'distCamera', width: 18 },
+      { header: 'รูปโค้ง', key: 'diagram', width: 60 }
+    ];
+
+    ws.mergeCells('A1:N1');
+    ws.getCell('A1').value = 'คำนวณโค้งราบ (HORIZONTAL CURVE REPORT)';
+    ws.getCell('A1').font = { bold: true, size: 18, color: { argb: 'FFFFFFFF' } };
+    ws.getCell('A1').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0369A1' } };
+    ws.getCell('A1').alignment = { horizontal: 'center', vertical: 'middle' };
+    ws.getRow(1).height = 32;
+
+    ws.mergeCells('A2:N2');
+    ws.getCell('A2').value = 'โครงการงานทางวิศวกรรมภาคสนาม | จัดทำเมื่อ: ' + new Date().toLocaleString('th-TH');
+    ws.getCell('A2').font = { size: 11, color: { argb: 'FF475569' } };
+    ws.getCell('A2').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF1F5F9' } };
+    ws.getCell('A2').alignment = { horizontal: 'center' };
+
+    ws.mergeCells('A3:N3');
+    ws.getCell('A3').value = 'รูปโค้งของแต่ละโค้งถูกฝังลงในไฟล์ Excel โดยอัตโนมัติ';
+    ws.getCell('A3').font = { italic: true, size: 10, color: { argb: 'FF64748B' } };
+    ws.getCell('A3').alignment = { horizontal: 'center' };
+
+    const headerRow = ws.getRow(4);
+    headerRow.values = ws.columns.map(c => c.header);
+    headerRow.height = 28;
+    headerRow.eachCell(cell => {
+      cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0F172A' } };
+      cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
+      cell.border = { top:{style:'thin',color:{argb:'FF94A3B8'}}, bottom:{style:'thin',color:{argb:'FF94A3B8'}}, left:{style:'thin',color:{argb:'FF94A3B8'}}, right:{style:'thin',color:{argb:'FF94A3B8'}} };
+    });
+
+    function makeDiagramSvg(record) {
+      const right = record.direction !== -1;
+      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+      svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+      svg.setAttribute('viewBox', '0 0 580 430');
+      svg.setAttribute('width', '1160');
+      svg.setAttribute('height', '860');
+
+      const ns = 'http://www.w3.org/2000/svg';
+      const add = (tag, attrs, text) => {
+        const el = document.createElementNS(ns, tag);
+        Object.entries(attrs || {}).forEach(([k,v]) => el.setAttribute(k, v));
+        if (text !== undefined) el.textContent = text;
+        svg.appendChild(el);
+        return el;
+      };
+
+      add('rect', {x:0,y:0,width:'100%',height:'100%',fill:'#ffffff'});
+
+      const pathD = right
+        ? 'M 450 320 L 350 320 A 200 200 0 0 1 150 120 L 150 20'
+        : 'M 130 320 L 230 320 A 200 200 0 0 0 430 120 L 430 20';
+
+      // ถนนและเส้นกึ่งกลาง
+      add('path', {d:pathD, fill:'none', stroke:'#334155', 'stroke-width':45, 'stroke-linecap':'round'});
+      add('path', {d:pathD, fill:'none', stroke:'#facc15', 'stroke-width':2, 'stroke-dasharray':'12,12'});
+
+      // เส้นประกอบ PI-PC-PT / แนวสัมผัส / แนว R
+      if (right) {
+        add('polyline', {points:'350,320 150,320 150,120', fill:'none', stroke:'#ef4444', 'stroke-width':2, 'stroke-dasharray':'6,4'});
+        add('line', {x1:350,y1:120,x2:350,y2:320, stroke:'#ef4444', 'stroke-width':1.5});
+        add('line', {x1:350,y1:120,x2:150,y2:120, stroke:'#ef4444', 'stroke-width':1.5});
+        add('line', {x1:150,y1:320,x2:208.58,y2:261.42, stroke:'#ea580c', 'stroke-width':2, 'stroke-linecap':'round'});
+        add('line', {x1:150,y1:320,x2:150,y2:385, stroke:'#0284c7', 'stroke-width':2, 'stroke-dasharray':'4,4'});
+      } else {
+        add('polyline', {points:'230,320 430,320 430,120', fill:'none', stroke:'#ef4444', 'stroke-width':2, 'stroke-dasharray':'6,4'});
+        add('line', {x1:230,y1:120,x2:230,y2:320, stroke:'#ef4444', 'stroke-width':1.5});
+        add('line', {x1:230,y1:120,x2:430,y2:120, stroke:'#ef4444', 'stroke-width':1.5});
+        add('line', {x1:430,y1:320,x2:371.42,y2:261.42, stroke:'#ea580c', 'stroke-width':2, 'stroke-linecap':'round'});
+        add('line', {x1:430,y1:320,x2:430,y2:385, stroke:'#0284c7', 'stroke-width':2, 'stroke-dasharray':'4,4'});
+      }
+
+      // จุดสำคัญ
+      if (right) {
+        add('circle',{cx:350,cy:120,r:6,fill:'#ef4444'});
+        add('circle',{cx:150,cy:320,r:6,fill:'#ef4444'});
+        add('circle',{cx:350,cy:320,r:5,fill:'#0284c7'});
+        add('circle',{cx:150,cy:120,r:5,fill:'#0284c7'});
+        add('circle',{cx:208.58,cy:261.42,r:4,fill:'#facc15'});
+      } else {
+        add('circle',{cx:230,cy:120,r:6,fill:'#ef4444'});
+        add('circle',{cx:430,cy:320,r:6,fill:'#ef4444'});
+        add('circle',{cx:230,cy:320,r:5,fill:'#0284c7'});
+        add('circle',{cx:430,cy:120,r:5,fill:'#0284c7'});
+        add('circle',{cx:371.42,cy:261.42,r:4,fill:'#facc15'});
+      }
+
+      const text = (x,y,str,fill,size,anchor='start') => add('text', {
+        x,y,fill,'font-size':size,'font-family':'Arial, Tahoma, sans-serif',
+        'font-weight':'bold','text-anchor':anchor,
+        'paint-order':'stroke','stroke':'#ffffff','stroke-width':3
+      }, str);
+
+      if (right) {
+        text(140,325,`PI: ${record.results.pi}`,'#ef4444',15,'end');
+        text(365,340,`PC: ${record.results.pc}`,'#0284c7',14,'start');
+        text(135,115,`PT: ${record.results.pt}`,'#0284c7',14,'end');
+        text(365,220,`R = ${record.results.r} m`,'#ef4444',15,'start');
+        text(250,340,`T = ${record.results.t}`,'#475569',13,'middle');
+        text(170,275,`E = ${record.results.e} m`,'#ea580c',13,'end');
+        text(160,380,`ระยะยิงกล้อง: ${record.results.distCamera} ม. (STA ${record.results.nextFullSta})`,'#0284c7',13,'start');
+        text(350,100,'จุดศูนย์กลาง (O)','#475569',13,'middle');
+      } else {
+        text(440,325,`PI: ${record.results.pi}`,'#ef4444',15,'start');
+        text(215,340,`PC: ${record.results.pc}`,'#0284c7',14,'end');
+        text(445,115,`PT: ${record.results.pt}`,'#0284c7',14,'start');
+        text(215,220,`R = ${record.results.r} m`,'#ef4444',15,'end');
+        text(330,340,`T = ${record.results.t}`,'#475569',13,'middle');
+        text(410,275,`E = ${record.results.e} m`,'#ea580c',13,'start');
+        text(420,380,`ระยะยิงกล้อง: ${record.results.distCamera} ม. (STA ${record.results.nextFullSta})`,'#0284c7',13,'end');
+        text(230,100,'จุดศูนย์กลาง (O)','#475569',13,'middle');
+      }
+      return svg;
+    }
+
+    // สร้าง PNG ให้มีขนาดเท่าพื้นที่เซลล์ และรักษาอัตราส่วนรูปโค้งแบบ contain
+    // เพื่อให้รูปอยู่ภายในเซลล์พอดี ไม่ล้น/ไม่ทับแถวอื่น
+    function svgToCellPngDataUrl(svg, canvasWidth = 840, canvasHeight = 620) {
+      const xml = new XMLSerializer().serializeToString(svg);
+      const svgBlob = new Blob([xml], {type:'image/svg+xml;charset=utf-8'});
+      const url = URL.createObjectURL(svgBlob);
+
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+          try {
+            const canvas = document.createElement('canvas');
+            canvas.width = canvasWidth;
+            canvas.height = canvasHeight;
+            const ctx = canvas.getContext('2d');
+
+            // พื้นหลังขาว
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+            // รักษาอัตราส่วนเดิมของรูปโค้ง
+            const scale = Math.min(canvasWidth / img.naturalWidth, canvasHeight / img.naturalHeight);
+            const drawW = img.naturalWidth * scale;
+            const drawH = img.naturalHeight * scale;
+            const offsetX = (canvasWidth - drawW) / 2;
+            const offsetY = (canvasHeight - drawH) / 2;
+
+            ctx.drawImage(img, offsetX, offsetY, drawW, drawH);
+
+            URL.revokeObjectURL(url);
+            resolve(canvas.toDataURL('image/png'));
+          } catch (err) {
+            URL.revokeObjectURL(url);
+            reject(err);
+          }
+        };
+        img.onerror = () => {
+          URL.revokeObjectURL(url);
+          reject(new Error('ไม่สามารถแปลงรูปโค้งเป็น PNG ได้'));
+        };
+        img.src = url;
+      });
+    }
+
+    for (let i = 0; i < chronologicalRecords.length; i++) {
+      const r = chronologicalRecords[i];
+      const row = ws.addRow([
+        i + 1, r.name, r.direction === -1 ? 'โค้งซ้าย ↶' : 'โค้งขวา ↷', r.timestamp,
+        r.results.pc, r.results.pi, r.results.pt,
+        Number(r.results.r), Number(r.results.t), Number(r.results.e),
+        Number(r.results.l), Number(r.results.adj), Number(r.results.distCamera),
+        'รูปโค้ง'
+      ]);
+
+      row.height = 240;
+      row.eachCell((cell, col) => {
+        cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
+        cell.border = {
+          top:{style:'thin',color:{argb:'FF94A3B8'}},
+          bottom:{style:'thin',color:{argb:'FF94A3B8'}},
+          left:{style:'thin',color:{argb:'FF94A3B8'}},
+          right:{style:'thin',color:{argb:'FF94A3B8'}}
+        };
+        if (col >= 8 && col <= 13) cell.numFmt = '0.000';
+      });
+
+      row.getCell(13).fill = { type:'pattern', pattern:'solid', fgColor:{argb:'FFF0FDF4'} };
+      row.getCell(13).font = { bold:true, color:{argb:'FF166534'} };
+
+      // แปลงเป็น PNG ก่อนฝัง เพื่อให้เส้นถนนและเส้นประกอบแสดงใน Excel ได้ครบ
+      // สร้างภาพขนาดเท่าพื้นที่เซลล์จริง แล้วฝังแบบ two-cell anchor
+      // ทำให้รูปยึดอยู่กับเซลล์ N ของแถวนั้นและไม่ล้ำไปแถวถัดไป
+      const pngData = await svgToCellPngDataUrl(makeDiagramSvg(r), 840, 620);
+      const imageId = workbook.addImage({
+        base64: pngData,
+        extension: 'png'
+      });
+
+      ws.addImage(imageId, {
+        tl: { col: 13, row: row.number - 1 },
+        br: { col: 14, row: row.number },
+        editAs: 'twoCell'
+      });
+    }
+
+    ws.autoFilter = { from: 'A4', to: `N${ws.lastRow.number}` };
+
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    });
+
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `SURVEY_REPORT_${new Date().toISOString().slice(0,10)}.xlsx`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  }
+
+  document.getElementById('record_count').innerText = getStoredRecords().length;
+</script>
+</body>
+</html>
