@@ -1,866 +1,482 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>H-CURVE CALCULATOR PRO</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary: #0284c7;
-      --primary-hover: #0369a1;
-      --card-bg: #ffffff;
-      --border: #cbd5e1;
-      --text-main: #0f172a;
-    }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>คำนวณโค้งราบวงกลม – E / D / ตารางวางผัง</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#f4f6f9;--card:#fff;--ink:#14202e;--mut:#64748b;--line:#dbe2ea;--acc:#0a7cff;--acc2:#12a594;--warn:#d97706;--inp:#f1f5f9;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0c0f13;--card:#151a21;--ink:#e6edf5;--mut:#8b98a9;--line:#252d38;--acc:#4da3ff;--acc2:#2dd4bf;--warn:#fbbf24;--inp:#0f1318;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0c0f13;--card:#151a21;--ink:#e6edf5;--mut:#8b98a9;--line:#252d38;--acc:#4da3ff;--acc2:#2dd4bf;--warn:#fbbf24;--inp:#0f1318;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 "Sarabun","Noto Sans Thai",system-ui,sans-serif}
+.wrap{max-width:1100px;margin:0 auto;padding:20px 16px 48px}
+header{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:18px}
+.eyebrow{font:600 12px/1 ui-monospace,monospace;letter-spacing:.14em;color:var(--acc2);text-transform:uppercase}
+h1{margin:6px 0 4px;font-size:clamp(22px,4vw,32px);line-height:1.2}
+.sub{color:var(--mut);margin:0}
+.tg{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:8px 12px;cursor:pointer;font:inherit}
+.grid{display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:16px;align-items:start}
+@media(max-width:860px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;box-shadow:0 1px 2px rgba(0,0,0,.04)}
+.card h2{margin:0 0 12px;font-size:16px;display:flex;align-items:center;gap:8px}
+.n{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--acc);color:#fff;font-size:13px}
+label{display:block;font-size:13px;color:var(--mut);margin:12px 0 5px}
+input,select{width:100%;background:var(--inp);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font:inherit;font-variant-numeric:tabular-nums;transition:border .15s,box-shadow .15s}
+input:focus,select:focus{outline:none;border-color:var(--acc);box-shadow:0 0 0 3px color-mix(in srgb,var(--acc) 25%,transparent)}
+.row{display:flex;gap:8px;align-items:center}.row span{color:var(--mut)}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--inp);border:1px solid var(--line);border-radius:12px;padding:4px}
+.seg button{border:0;background:transparent;color:var(--mut);padding:9px;border-radius:9px;cursor:pointer;font:600 14px inherit;transition:.2s}
+.seg button.on{background:var(--acc);color:#fff;box-shadow:0 2px 8px color-mix(in srgb,var(--acc) 40%,transparent)}
+.dbox{margin-top:14px;padding:12px 14px;border-radius:12px;background:color-mix(in srgb,var(--acc2) 12%,transparent);border:1px dashed var(--acc2);display:flex;justify-content:space-between;align-items:center}
+.dbox b{font:700 22px ui-monospace,monospace;color:var(--acc2)}
+.dbox small{color:var(--mut)}
+details{margin-top:14px;border-top:1px solid var(--line);padding-top:10px}summary{cursor:pointer;color:var(--acc);font-weight:600}
+.res{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.k{background:var(--inp);border:1px solid var(--line);border-radius:12px;padding:10px 12px;animation:pop .35s both}
+.k small{display:block;color:var(--mut);font-size:12px}.k b{font:700 17px ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.k.hl{border-color:var(--acc);background:color-mix(in srgb,var(--acc) 10%,transparent)}
+.k.ok b{color:var(--acc2)}.k.bad b{color:var(--warn)}
+@keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.stack{display:grid;gap:16px}
+.empty{color:var(--mut);text-align:center;padding:26px 8px}
+#svgbox{background:var(--inp);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+#svgbox svg{display:block;width:100%;height:auto;max-height:420px}
+.arc{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.4s ease forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.pt{opacity:0;animation:pop .4s forwards}
+.next{margin-top:12px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:12px 14px;border-radius:12px;background:color-mix(in srgb,var(--warn) 12%,transparent);border:1px solid var(--warn)}
+.next b{font:700 18px ui-monospace,monospace}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
+table{border-collapse:collapse;width:100%;font-size:13.5px;font-variant-numeric:tabular-nums;white-space:nowrap}
+th,td{padding:8px 10px;text-align:right;border-bottom:1px solid var(--line)}
+th{position:sticky;top:0;background:var(--inp);color:var(--mut);font-weight:600;font-size:12px}
+td:first-child,th:first-child{text-align:left}
+tr.e td{background:color-mix(in srgb,var(--acc) 10%,transparent);font-weight:700}
+tbody tr{animation:pop .3s both}tbody tr:hover td{background:var(--inp)}
+.bar{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.btn{border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:9px 14px;cursor:pointer;font:600 14px inherit}
+.btn.p{background:var(--acc);border-color:var(--acc);color:#fff}
+.note{color:var(--mut);font-size:12.5px;margin:10px 0 0}
+.err{color:var(--warn);font-size:13px;margin-top:8px}
 
-    * { box-sizing: border-box; font-family: 'Prompt', sans-serif; margin: 0; padding: 0; }
-    
-    body {
-      background-color: #eef3f8;
-      background-image: linear-gradient(rgba(148,163,184,0.10) 1px, transparent 1px), linear-gradient(90deg, rgba(148,163,184,0.10) 1px, transparent 1px);
-      background-size: 24px 24px;
-      color: var(--text-main);
-      padding: 16px 12px 60px;
-      min-height: 100vh;
-    }
+.gs{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px}
+.g{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--card)}
+.g h3{margin:0;padding:8px 12px;font-size:13px;color:var(--mut);background:var(--inp);border-bottom:1px solid var(--line);font-weight:600}
+.r{display:grid;grid-template-columns:52px 1fr auto;gap:10px;align-items:center;padding:8px 12px;border-bottom:1px solid var(--line);animation:pop .35s both}
+.r:last-child{border-bottom:0}
+.sy{display:grid;place-items:center;height:30px;border-radius:8px;background:color-mix(in srgb,var(--acc) 12%,transparent);color:var(--acc);font:700 13px ui-monospace,monospace}
+.r.hl .sy{background:var(--acc);color:#fff}
+.nm{line-height:1.25;font-size:14px}.nm small{display:block;color:var(--mut);font:12px ui-monospace,monospace}
+.v{text-align:right;font:700 16px ui-monospace,monospace;font-variant-numeric:tabular-nums}.v i{font:400 12px system-ui;color:var(--mut);font-style:normal;margin-left:3px}
+.r.ok .v{color:var(--acc2)}.r.bad .v{color:var(--warn)}
+#svgbox svg{max-height:520px}
+#svgbox text{paint-order:stroke;stroke:var(--inp);stroke-width:.6px;stroke-linejoin:round;font-family:system-ui,"Sarabun",sans-serif}
+.cap{color:var(--mut);font-size:12.5px;margin:8px 0 0}
+.btn:disabled{opacity:.45;cursor:not-allowed}
 
-    .container { max-width: 620px; margin: 0 auto; }
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px 10px;align-items:end}
+.g3 .sp2{grid-column:span 2}.f label{margin:0 0 5px;font-size:12px;white-space:nowrap}
+.g3 .dbox{margin:0;height:100%}
+.grid{grid-template-columns:minmax(0,460px) minmax(0,1fr)}
+@media(max-width:980px){.grid{grid-template-columns:1fr}}
+@media(max-width:460px){.g3{grid-template-columns:repeat(2,minmax(0,1fr))}.g3 .sp2{grid-column:1/-1}}
+#svgbox svg{max-height:560px}
+details .g3{margin-top:10px}
 
-    /* Header */
-    .app-header { text-align: center; margin-bottom: 16px; }
-    .survey-badge {
-      display: inline-block; background: #e0f2fe; border: 1px solid #7dd3fc;
-      color: #0284c7; font-size: 0.75rem; font-weight: 800; padding: 4px 14px;
-      border-radius: 20px; margin-bottom: 6px; letter-spacing: 0.5px;
-    }
-    .app-header h1 { font-size: 1.45rem; font-weight: 800; color: #0f172a; }
+.wrap{max-width:1180px}
+.hero{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hc{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:14px;padding:12px 14px 12px 18px;background:var(--inp);animation:pop .35s both}
+.hc::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--c,var(--acc))}
+.hc small{display:block;color:var(--mut);font-size:12px}
+.hc b{display:block;margin-top:2px;font:800 clamp(19px,3vw,25px)/1.25 ui-monospace,monospace;font-variant-numeric:tabular-nums;color:var(--ink)}
+.hc i{font:400 12px system-ui;color:var(--mut);font-style:normal;margin-left:3px}
+.hc.a{background:linear-gradient(135deg,color-mix(in srgb,var(--acc) 22%,transparent),color-mix(in srgb,var(--acc2) 14%,transparent));border-color:var(--acc)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.chip{font:600 12.5px ui-monospace,monospace;padding:5px 10px;border-radius:999px;border:1px solid var(--line);background:var(--inp)}
+.chip.ok{border-color:var(--acc2);color:var(--acc2)}.chip.bad{border-color:var(--warn);color:var(--warn)}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:14px;align-items:start}.col{display:grid;gap:14px}
+.g h3::before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--c,var(--acc));margin-right:8px}
+.sy{background:color-mix(in srgb,var(--c,var(--acc)) 15%,transparent);color:var(--c,var(--acc))}
+.r.hl .sy{background:var(--c,var(--acc));color:#fff}
+#sum .next{margin-top:14px}
+.nx2{margin-top:12px;border-radius:14px;padding:14px 16px;background:linear-gradient(135deg,#0f2740,#0f3a3f);color:#e6edf5;border:1px solid #1e4a5e;animation:pop .35s both}
+.nx2 small{display:block;color:#9fb4c7;font-size:12.5px}
+.nx2 .t{display:flex;justify-content:space-between;gap:10px;align-items:baseline;margin-top:4px;font:600 13px ui-monospace,monospace;color:#9fb4c7}.nx2 .t b{font-size:17px;color:#e6edf5}
+.nx2 .big{font:800 clamp(28px,5vw,38px)/1.2 ui-monospace,monospace;color:#2dd4bf;margin:6px 0 2px}.nx2 .big i{font:400 14px system-ui;color:#9fb4c7;font-style:normal;margin-left:4px}
+.lg{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;padding:10px 12px;border-top:1px solid var(--line)}
+.li{display:flex;align-items:center;gap:8px;line-height:1.2}.li i{flex:none;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;color:#fff;font:800 12px system-ui;font-style:normal}
+.li span{display:block;color:var(--mut);font-size:11.5px}.li b{font:700 14px ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.wi{display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;padding:8px 10px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;background:var(--inp)}
+.wi small{color:var(--mut)}.wi .btn{padding:6px 10px;font-size:13px}
+#svgbox text.bt{stroke:none}
+.fxb{max-width:400px;margin:0 auto;padding:16px 16px 20px;border-radius:26px;background:linear-gradient(160deg,#3b4048,#1d2025 60%,#14171a);box-shadow:0 14px 30px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.14);color:#e8ecf1;outline:none;user-select:none}
+.fxh{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+.fxh b{font:italic 800 21px/1 system-ui;letter-spacing:.02em}.fxh span{font:600 9.5px system-ui;letter-spacing:.22em;color:#9aa6b2}
+.lcd{background:linear-gradient(#d1dcbd,#bccaa6);border-radius:10px;padding:6px 12px 8px;box-shadow:inset 0 3px 8px rgba(0,0,0,.4),0 0 0 3px #0e1013;color:#1f2b1a;font-family:ui-monospace,Menlo,monospace}
+.lst{display:flex;gap:10px;font-size:10.5px;font-weight:800;letter-spacing:.06em;height:15px;opacity:.85}
+.lex{min-height:26px;font-size:18px;white-space:nowrap;overflow:hidden;text-align:left}
+.lrs{font-size:30px;font-weight:800;text-align:right;min-height:38px;white-space:nowrap;overflow:hidden;font-variant-numeric:tabular-nums}
+.kg{display:grid;grid-template-columns:repeat(5,1fr);gap:11px 9px;margin-top:16px}
+.fk{position:relative;border:0;border-radius:9px 9px 13px 13px;height:46px;padding:13px 0 0;color:#fff;cursor:pointer;background:linear-gradient(#4b5159,#353a40);box-shadow:0 3px 0 #0b0d0f,0 5px 7px rgba(0,0,0,.4);font:700 14px system-ui;transition:transform .06s}
+.fk:active{transform:translateY(2px);box-shadow:0 1px 0 #0b0d0f}
+.fk small{position:absolute;top:3px;left:0;right:0;font:700 10px system-ui;color:#f5c518;line-height:1}
+.fk.fn{font-size:13px}.fk.dg{background:linear-gradient(#f3f5f7,#cdd3d9);color:#14202e;font-size:17px}
+.fk.op{background:linear-gradient(#5b6169,#3f444b);font-size:18px}.fk.ac{background:linear-gradient(#e2573f,#b23a2a)}
+.fk.eq{background:linear-gradient(#2f8fff,#0b62d6);font-size:18px}.fk.sh{background:linear-gradient(#f5c518,#c99c00);color:#241a00}.fk.sh.on{outline:2px solid #fff}
+.fxs{display:flex;gap:8px;justify-content:center;margin-top:12px;flex-wrap:wrap}
+.lex{position:relative;cursor:text}.lex span{white-space:pre}.lex .z{opacity:.35}
+.cr{display:inline-block;width:0;height:1.05em;border-left:2px solid #1f2b1a;vertical-align:-3px;margin:0 -1px;animation:blk 1s steps(1) infinite}
+.lex.dn .cr{display:none}@keyframes blk{50%{opacity:0}}
+.rp{display:flex;gap:8px;justify-content:center;margin-top:12px}
+.rp button{flex:1;max-width:86px;height:30px;border:0;border-radius:8px;background:linear-gradient(#2c3036,#1a1d21);color:#cfd6de;font:700 13px system-ui;box-shadow:0 2px 0 #0b0d0f;cursor:pointer}.rp button:active{transform:translateY(1px);box-shadow:none}
 
-    /* Tabs */
-    .nav-tabs {
-      display: flex; gap: 8px; background: #ffffff; padding: 6px;
-      border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.05); margin-bottom: 16px; border: 1px solid #e2e8f0;
-    }
-    .tab-btn {
-      flex: 1; background: transparent; border: none; color: #64748b;
-      padding: 10px 4px; font-size: 0.85rem; font-weight: 700; border-radius: 8px;
-      cursor: pointer; transition: all 0.2s;
-    }
-    .tab-btn.active { background: var(--primary); color: #ffffff; box-shadow: 0 4px 10px rgba(2, 132, 199, 0.3); }
-    .badge-count { background: #ef4444; color: white; padding: 2px 6px; border-radius: 10px; font-size: 0.7rem; margin-left: 4px; }
-
-    /* Cards */
-    .card {
-      background: var(--card-bg); border-radius: 14px; padding: 18px;
-      margin-bottom: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-    }
-    .card-title { font-size: 1rem; font-weight: 800; color: #0f172a; margin-bottom: 14px; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px; }
-
-    /* Forms */
-    .form-group { margin-bottom: 12px; }
-    label { display: block; font-size: 0.82rem; font-weight: 700; color: #475569; margin-bottom: 5px; }
-    input, select {
-      width: 100%; height: 44px; padding: 0 12px; border: 1.5px solid var(--border);
-      border-radius: 8px; font-size: 0.95rem; font-family: 'JetBrains Mono', 'Prompt', sans-serif;
-      outline: none; transition: 0.2s;
-    }
-    input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15); }
-    .sta-grid { display: grid; grid-template-columns: 110px 1fr; gap: 8px; }
-    .dms-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
-    .dms-grid input { text-align: center; }
-
-    /* Buttons */
-    .btn {
-      width: 100%; height: 46px; background: var(--primary); color: white;
-      border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 700;
-      cursor: pointer; transition: 0.2s; margin-top: 6px;
-    }
-    .btn:active { transform: scale(0.98); }
-    .btn-calc { background: #0d9488; }
-    .btn-save { background: #16a34a; box-shadow: 0 4px 12px rgba(22, 163, 74, 0.3); }
-
-    /* Results */
-    .calc-d-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; margin: 14px 0; text-align: center; }
-    .calc-d-box .val { font-family: 'JetBrains Mono', monospace; font-size: 1.6rem; font-weight: 800; color: #0284c7; }
-    
-    .res-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 14px; }
-    .res-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 10px; }
-    .res-title { font-size: 0.72rem; font-weight: 600; color: #64748b; }
-    .res-val { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; font-weight: 800; color: #0f172a; margin-top: 2px; }
-    
-    .survey-box { grid-column: span 2; background: #0f172a; border-radius: 8px; padding: 14px; color: white; text-align: center; }
-    .survey-box .res-val { color: #2dd4bf; font-size: 1.65rem; margin: 4px 0; }
-
-
-    .field-action { background: linear-gradient(135deg,#0f172a,#1e293b); border-radius: 12px; padding: 14px 16px; color: white; margin: 14px 0; border: 1px solid #334155; }
-    .field-action .fa-label { color:#94a3b8; font-size:.72rem; font-weight:700; letter-spacing:.3px; }
-    .field-action .fa-value { color:#f8fafc; font-family:'JetBrains Mono',monospace; font-size:1.12rem; font-weight:800; margin-top:2px; }
-    .field-action .fa-distance { color:#2dd4bf; font-family:'JetBrains Mono',monospace; font-size:1.8rem; font-weight:800; text-align:center; margin-top:6px; }
-    .btn-secondary { width:100%; height:40px; background:#e0f2fe; color:#0369a1; border:1px solid #7dd3fc; border-radius:8px; font-size:.82rem; font-weight:700; cursor:pointer; }
-    .result-divider { display:flex; align-items:center; gap:8px; margin:18px 0 10px; color:#64748b; font-size:.76rem; font-weight:800; }
-    .result-divider::before,.result-divider::after { content:''; height:1px; background:#cbd5e1; flex:1; }
-
-    /* Diagram Area */
-    .diagram-container {
-      background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px;
-      padding: 6px; position: relative; overflow: hidden;
-    }
-    svg { display: block; width: 100%; height: auto; }
-    
-    .svg-text-red { fill: #ef4444; font-size: 15px; font-weight: 900; font-family: 'JetBrains Mono', sans-serif; paint-order: stroke; stroke: #ffffff; stroke-width: 4px; stroke-linecap: butt; }
-    .svg-text-blue { fill: #0284c7; font-size: 14px; font-weight: 900; font-family: 'JetBrains Mono', sans-serif; paint-order: stroke; stroke: #ffffff; stroke-width: 4px; }
-    .svg-text-orange { fill: #ea580c; font-size: 13px; font-weight: 900; font-family: 'JetBrains Mono', sans-serif; paint-order: stroke; stroke: #ffffff; stroke-width: 4px; }
-    .svg-text-gray { fill: #475569; font-size: 13px; font-weight: 800; font-family: 'Prompt', sans-serif; paint-order: stroke; stroke: #ffffff; stroke-width: 3px; }
-
-    .page-section { display: none; }
-    .page-section.active { display: block; }
-
-    /* History List */
-    .history-card { background: #ffffff; border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 10px; }
-    .history-header { display: flex; justify-content: space-between; border-bottom: 1px solid #f1f5f9; padding-bottom: 6px; margin-bottom: 8px; }
-    .history-title { font-weight: 800; color: #0284c7; font-size: 0.95rem; }
-    .history-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; font-size: 0.78rem; margin-bottom: 8px; }
-    .history-item { background: #f8fafc; padding: 5px; border-radius: 6px; border: 1px solid #f1f5f9; }
-    .history-item span { color: #64748b; font-size: 0.68rem; font-weight: 600; display: block; }
-    .history-item b { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; color: #0f172a; }
-
-    /* ===== UI POLISH V7 ===== */
-    body {
-      background-color:#eaf1f7;
-      background-image:linear-gradient(rgba(14,116,144,.07) 1px, transparent 1px),linear-gradient(90deg, rgba(14,116,144,.07) 1px, transparent 1px);
-      background-size:22px 22px; padding:18px 12px 70px;
-    }
-    .container{max-width:720px;}
-    .app-header{position:relative;overflow:hidden;text-align:left;padding:20px 22px 22px;margin-bottom:14px;border-radius:20px;background:linear-gradient(135deg,#0b172a 0%,#123b59 58%,#0369a1 100%);box-shadow:0 14px 30px rgba(15,23,42,.16);color:#fff;}
-    .app-header::after{content:'';position:absolute;width:190px;height:190px;right:-55px;top:-85px;border:1px solid rgba(255,255,255,.13);border-radius:50%;box-shadow:0 0 0 24px rgba(255,255,255,.025),0 0 0 48px rgba(255,255,255,.02);}
-    .survey-badge{position:relative;z-index:1;background:rgba(45,212,191,.12);border:1px solid rgba(45,212,191,.4);color:#67e8f9;font-size:.68rem;padding:5px 11px;margin-bottom:9px;letter-spacing:1px;}
-    .app-header h1{position:relative;z-index:1;color:#fff;font-size:1.52rem;letter-spacing:.2px;}
-    .app-header::before{content:'FIELD • DESIGN • REPORT';position:absolute;z-index:1;right:22px;bottom:18px;color:rgba(255,255,255,.48);font-size:.58rem;font-weight:700;letter-spacing:1.2px;}
-    .nav-tabs{padding:5px;gap:5px;border-radius:14px;margin-bottom:15px;box-shadow:0 7px 18px rgba(15,23,42,.08);}
-    .tab-btn{padding:11px 7px;font-size:.84rem;border-radius:10px;}
-    .tab-btn.active{background:linear-gradient(135deg,#0284c7,#0369a1);box-shadow:0 6px 14px rgba(2,132,199,.28);}
-    .card{border-radius:16px;padding:19px;margin-bottom:14px;box-shadow:0 8px 22px rgba(15,23,42,.06);border-color:#d8e2ec;}
-    .card-title{font-size:1rem;padding-bottom:10px;margin-bottom:15px;display:flex;align-items:center;gap:7px;}
-    .card-title::before{content:'';width:4px;height:19px;border-radius:4px;background:linear-gradient(#06b6d4,#0284c7);display:inline-block;}
-    input,select{height:46px;border-radius:10px;background:#fbfdff;border-color:#cbd5e1;}
-    input:hover,select:hover{border-color:#7dd3fc;}
-    .btn{height:48px;border-radius:10px;box-shadow:0 6px 14px rgba(2,132,199,.16);}
-    .btn-calc{background:linear-gradient(135deg,#0f766e,#0d9488);}
-    .btn-save{background:linear-gradient(135deg,#15803d,#16a34a);}
-    .res-box{border-radius:11px;padding:10px 12px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.45);}
-    .survey-box{border-radius:12px;background:linear-gradient(135deg,#0b1220,#172033);box-shadow:0 8px 18px rgba(15,23,42,.16);}
-    .field-action{border-radius:13px;background:linear-gradient(135deg,#0b172a,#123b59 70%,#075985);box-shadow:0 8px 18px rgba(15,23,42,.12);}
-    .diagram-container{border-radius:13px;padding:8px;box-shadow:inset 0 0 0 1px #e2e8f0;background:#f8fafc;}
-    .result-divider{margin:20px 0 11px;color:#0369a1;letter-spacing:.4px;}
-    .history-card{border-radius:13px;padding:13px;box-shadow:0 6px 16px rgba(15,23,42,.05);}
-    .history-title{color:#0369a1;}
-    @media (max-width:600px){.app-header::before{display:none}.app-header{padding:18px}.app-header h1{font-size:1.28rem}.container{max-width:100%}.history-grid{grid-template-columns:repeat(2,1fr)}}
-
-    /* Footer Credit */
-    .app-footer {
-      text-align: center;
-      margin: 22px 0 4px;
-      padding: 14px 10px 4px;
-      color: #64748b;
-      font-size: 0.76rem;
-      letter-spacing: 0.25px;
-    }
-    .app-footer .credit-main {
-      font-weight: 700;
-      color: #334155;
-    }
-    .app-footer .credit-name {
-      color: #0284c7;
-      font-weight: 800;
-    }
-    .app-footer .credit-sub {
-      margin-top: 3px;
-      font-size: 0.68rem;
-      color: #94a3b8;
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-  </style>
+</style>
 </head>
 <body>
+<div class="wrap">
+<header>
+ <div><div class="eyebrow">Engineering survey • H-Curve</div>
+ <h1>คำนวณโค้งราบวงกลม</h1>
+ <p class="sub">ป้อนค่า E ภาคสนามและมุม Δ → ได้ D ทฤษฎี → เลือก D ใช้งานจริง → ตารางวางผัง</p></div>
+ <button class="tg" id="theme">◐ ธีม</button>
+</header>
 
-<div class="container">
-  
-  <div class="app-header">
-    <div class="survey-badge">ENGINEERING SURVEY • H-CURVE</div>
-    <h1>H-CURVE CALCULATOR PRO</h1>
+<div class="grid">
+<div class="stack">
+<section class="card">
+ <h2><span class="n">1</span>ข้อมูลสำรวจภาคสนาม</h2>
+ <div class="g3">
+  <div class="f sp2"><label>ชื่อโค้ง</label><input id="nm" placeholder="เช่น โค้งที่ 1"></div>
+  <div class="f"><label>ทิศทางโค้ง</label><div class="seg" id="dir"><button class="on" data-v="R">ขวา ↷</button><button data-v="L">ซ้าย ↶</button></div></div>
+  <div class="f sp2"><label>STA. PI (กม. + เมตร)</label><div class="row"><input id="km" type="number" inputmode="decimal" value="0" min="0"><span>+</span><input id="m" type="number" inputmode="decimal" step="any" placeholder="เมตร"></div></div>
+  <div class="f"><label>E ภาคสนาม (ม.)</label><input id="E" type="number" inputmode="decimal" step="any" placeholder="เช่น 12.345"></div>
+  <div class="f"><label>Δ องศา (°)</label><input id="dd" type="number" inputmode="decimal" placeholder="°"></div>
+  <div class="f"><label>Δ ลิปดา (′)</label><input id="dm" type="number" inputmode="decimal" placeholder="′"></div>
+  <div class="f"><label>Δ ฟิลิปดา (″)</label><input id="ds" type="number" inputmode="decimal" step="any" placeholder="″"></div>
+  <div class="f sp2"><div class="dbox"><div><small>D ทฤษฎี (จาก E และ Δ)</small><br><b id="dth">0.000</b></div><small id="rth"></small></div></div>
+  <div class="f"><label>D ที่ใช้งานจริง (°)</label><input id="Din" type="number" inputmode="decimal" step="any" placeholder="ว่าง = D ทฤษฎี"></div>
+  <div class="f"><label>ช่วงสถานี</label><select id="iv"><option value="25">25 m</option><option value="20">20 m</option><option value="10">10 m</option><option value="5">5 m</option><option value="50">50 m</option><option value="100">100 m</option></select></div>
+  <div class="f sp2"><label>วางผังทุก</label><select id="lay"><option value="0">สถานีเต็ม</option><option value="1">1 m</option><option value="2">2 m</option><option value="5">5 m</option><option value="10">10 m</option><option value="20">20 m</option><option value="25">25 m</option></select></div>
+ </div>
+ <details><summary>พิกัด (ไม่บังคับ): PI และอะซิมุทของเส้นสัมผัส PC→PI</summary>
+  <div class="g3"><div class="f"><label>E ของ PI (m)</label><input id="pe" type="number" step="any"></div>
+  <div class="f"><label>N ของ PI (m)</label><input id="pn" type="number" step="any"></div>
+  <div class="f"><label>อะซิมุท PC → PI</label><input id="az" placeholder="45.5 หรือ 45 30 00"></div></div>
+  <p class="note">ใส่มุมเป็นองศาทศนิยม หรือ องศา ลิปดา ฟิลิปดา คั่นด้วยเว้นวรรค</p>
+ </details>
+ <div class="err" id="err"></div>
+ <p class="note">D ใช้นิยามส่วนโค้ง 100 ม.: D = 5729.578 / R (R = 5729.578 / D) · สถานีในรูปแบบ กม.+ม. เช่น 1+245.300 = 1,245.300 ม.</p>
+</section>
+
+<section class="card" id="sum">
+  <h2><span class="n">2</span>สรุปผลและส่งออก</h2>
+  <div id="hero"><div class="empty">กรอกข้อมูลเพื่อดูสรุปผล</div></div>
+  <div class="next" id="next" hidden></div>
+  <div class="nx2" id="next2" hidden></div>
+  <div class="bar"><button class="btn p" id="xl" disabled>บันทึกลง Excel (.xlsx)</button><button class="btn p" id="dx" disabled>ส่งออก DXF/DWG (.zip)</button></div>
+  <p class="note">ไฟล์ .zip มี .dxf อยู่ข้างใน แตกไฟล์แล้วเปิดใน AutoCAD ได้เลย (Save As เป็น .dwg ได้) ถ้าไม่กรอกพิกัด PC จะอยู่ที่ (0,0) และแนว PC→PI ไปทางทิศตะวันออก</p>
+</section>
+<section class="card" id="wk">
+  <h2><span class="n">💾</span>งานที่บันทึก</h2>
+  <div id="wlist"><div class="empty">ยังไม่มีงานที่บันทึก</div></div>
+  <div class="bar"><button class="btn p" id="wsave">บันทึกโค้งนี้</button><button class="btn" id="wexp">บันทึกเป็นไฟล์ HTML</button><button class="btn" id="wimp">นำเข้าจากไฟล์ HTML</button><button class="btn" id="wclr" disabled>ล้างทั้งหมด</button></div>
+  <input type="file" id="wfile" accept=".html,.htm,text/html" hidden>
+  <p class="note">ไฟล์ HTML ที่บันทึกเปิดดูได้ทุกเครื่อง และนำกลับเข้าเครื่องคำนวณนี้ด้วยปุ่ม "นำเข้าจากไฟล์ HTML" (รายการยังจำไว้ในเบราว์เซอร์เครื่องนี้ด้วย)</p>
+</section>
+</div>
+<div class="stack">
+<section class="card">
+  <h2><span class="n">3</span>องค์ประกอบโค้ง</h2>
+  <div id="out"><div class="empty">กรอก E, Δ และ STA PI เพื่อเริ่มคำนวณ</div></div>
+</section>
+<section class="card" id="fxc">
+  <h2><span class="n">🧮</span>เครื่องคิดเลข <small style="font-weight:400;color:var(--mut)">ทรง fx-5800P</small></h2>
+  <div class="fxb" id="fxb" tabindex="0">
+   <div class="fxh"><b>fx-5800P</b><span>SCIENTIFIC</span></div>
+   <div class="lcd"><div class="lst"><span id="lS"></span><span id="lM">DEG</span><span id="lD"></span></div><div class="lex" id="lex">0</div><div class="lrs" id="lrs"></div></div>
+   <div class="rp" id="rp"><button data-a="@h" title="ไปต้นสมการ">⏮</button><button data-a="@l" title="เลื่อนซ้าย">◀</button><button data-a="@rr" title="เลื่อนขวา">▶</button><button data-a="@n" title="ไปท้ายสมการ">⏭</button></div>
+   <div class="kg" id="kg"></div>
   </div>
-
-  <div class="nav-tabs">
-    <button class="tab-btn active" onclick="switchPage('calc')">📐 คำนวณค่า</button>
-    <button class="tab-btn" onclick="switchPage('history')">📁 ฐานข้อมูล<span class="badge-count" id="record_count">0</span></button>
-  </div>
-
-  <!-- หน้าที่ 1: คำนวณค่า -->
-  <div id="page_calc" class="page-section active">
-    <div class="card">
-      <div class="card-title">1. ข้อมูลสำรวจภาคสนาม</div>
-      
-      <div class="form-group">
-        <label>ชื่อโค้ง (เช่น โค้งที่ 1)</label>
-        <input type="text" id="curve_name" placeholder="ระบุชื่อโค้ง">
-      </div>
-
-      <div class="form-group">
-        <label>ทิศทางโค้งถนน (Curve Direction)</label>
-        <select id="curve_dir">
-          <option value="1">ถนนโค้งขวา (Curve Right ↷)</option>
-          <option value="-1">ถนนโค้งซ้าย (Curve Left ↶)</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label>STA. PI (กม. + เมตร)</label>
-        <div class="sta-grid">
-          <select id="sta_km">
-            <option value="0" selected>0 +</option>
-            <option value="1000">1 +</option>
-            <option value="2000">2 +</option>
-            <option value="3000">3 +</option>
-            <option value="4000">4 +</option>
-            <option value="5000">5 +</option>
-            <option value="6000">6 +</option>
-            <option value="7000">7 +</option>
-          </select>
-          <input type="number" step="any" id="sta_m" placeholder="เช่น 12.30">
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>ระยะห่างหน้างาน E (Field External)</label>
-        <input type="number" step="any" id="e_field" placeholder="เช่น 0.902">
-      </div>
-
-      <div class="form-group">
-        <label>มุมเบี่ยงเบน DELTA A (องศา - ลิปดา - ฟิลิปดา)</label>
-        <div class="dms-grid">
-          <input type="number" id="deg" placeholder="°">
-          <input type="number" id="min" placeholder="'">
-          <input type="number" step="any" id="sec" placeholder="''">
-        </div>
-      </div>
-
-      <button class="btn" onclick="calculateTheoreticalD()">1. คำนวณหา Degree of Curve (D)</button>
-
-      <div id="calc_d_area" style="display: none;">
-        <div class="calc-d-box">
-          <div style="font-size:0.75rem; color:#64748b; font-weight:700;">D ทฤษฎี (THEORETICAL)</div>
-          <div class="val" id="d_calc_val">0.000</div>
-        </div>
-
-        <div class="form-group">
-          <label>ป้อนค่า D ที่ต้องการใช้งานจริง (INPUT D)</label>
-          <input type="number" step="any" id="d_input" placeholder="ใส่เลข D ที่เลือกใช้จริง">
-        </div>
-
-        <button class="btn btn-calc" onclick="calculateFinalCurve()">2. คำนวณองค์ประกอบโค้งจริง</button>
-      </div>
-    </div>
-
-    <div class="card" id="results_area" style="display: none;">
-      <div class="card-title">② ผลลัพธ์องค์ประกอบโค้ง</div>
-      
-      <div class="res-grid">
-        <div class="res-box"><div class="res-title">รัศมีความโค้ง (R)</div><div class="res-val" id="res_r">-</div></div>
-        <div class="res-box"><div class="res-title">ระยะสัมผัส (T)</div><div class="res-val" id="res_t">-</div></div>
-        <div class="res-box" style="background:#fff7ed;"><div class="res-title">ระยะภายนอกจริง (E)</div><div class="res-val" id="res_e" style="color:#ea580c;">-</div></div>
-        <div class="res-box" style="background:#fef2f2;"><div class="res-title">ความยาวโค้ง (L)</div><div class="res-val" id="res_l" style="color:#dc2626;">-</div></div>
-        <div class="res-box"><div class="res-title">ระยะปรับแก้ (ADJ)</div><div class="res-val" id="res_adj">-</div></div>
-        <div class="res-box" style="grid-column:span 2; background:#f0fdf4; border-color:#bbf7d0;">
-          <div style="display:flex; justify-content:space-between;">
-            <div><div class="res-title">เริ่มโค้ง (STA PC)</div><div class="res-val" id="res_pc" style="color:#16a34a;">-</div></div>
-            <div style="text-align:right;"><div class="res-title">สิ้นสุดโค้ง (STA PT)</div><div class="res-val" id="res_pt" style="color:#16a34a;">-</div></div>
-          </div>
-        </div>
-        
-        <div class="survey-box">
-          <div style="font-size:0.82rem; color:#94a3b8; font-weight:700;">⌖ STA เต็มถัดไป (ช่วง 25 ม.): <span style="color:white;" id="res_next_full_sta">-</span></div>
-          <div style="font-size:0.75rem; color:#38bdf8; margin-top:6px;">(วัดระยะดึงเทปออกจากตัวกล้อง)</div>
-          <div class="res-val" id="res_dist_pi_to_full">-</div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <div class="result-divider">ตรวจสอบแบบแปลนและงานสนาม</div>
-    <div class="card">
-      <div class="card-title">③ รูปโค้ง (Curve Diagram)</div>
-      <p style="font-size: 0.82rem; color: #64748b; margin-bottom: 10px;" id="diagram_status">
-        เมื่อคำนวณโค้งแล้ว รูปโค้งและเส้นประกอบจะปรากฏตรงนี้ทันที
-      </p>
-
-      <div class="field-action">
-        <div class="fa-label">FIELD SURVEY • จุดยิงกล้องถัดไป</div>
-        <div style="display:flex;justify-content:space-between;gap:12px;margin-top:8px;">
-          <div><div class="fa-label">STA เต็มถัดไป</div><div class="fa-value" id="field_next_sta">-</div></div>
-          <div style="text-align:right;"><div class="fa-label">STA PI</div><div class="fa-value" id="field_pi_sta">-</div></div>
-        </div>
-        <div class="fa-distance" id="field_distance">-</div>
-        <div style="text-align:center;color:#94a3b8;font-size:.7rem;margin-top:2px;">เมตร • วัดระยะดึงเทปออกจากตัวกล้อง</div>
-      </div>
-
-      <!-- ดาวน์โหลดรูปเป็นตัวเลือกเสริม -->
-      <button id="btn_save_png" class="btn-secondary" onclick="downloadDiagramPNG()" style="display:none; margin-bottom:10px;">
-        📥 ดาวน์โหลดรูปโค้ง PNG
-      </button>
-
-      <div class="diagram-container" id="diagram_render_area" style="display: none;"></div>
-
-  <button class="btn btn-save" onclick="saveSurveyRecord()" style="margin-top:0; margin-bottom:16px;">💾 บันทึกข้อมูลโค้งนี้</button>
-    </div>
-  </div>
-
-  <!-- หน้าที่ 2: ฐานข้อมูล -->
-  <div id="page_history" class="page-section">
-    <div class="card">
-      <div class="card-title" style="display:flex; justify-content:space-between; align-items:center;">
-        📁 ฐานข้อมูลสำรวจ
-        <button class="btn btn-save" onclick="exportToCleanExcel()" style="width:auto;height:38px;margin:0;padding:0 14px;font-size:.78rem;box-shadow:none;">📊 ส่งออก Excel</button>
-      </div>
-      <div id="records_container"></div>
-      <button onclick="clearAllRecords()" style="width:100%;background:#fff7f7;color:#dc2626;border:1px solid #fecaca;padding:10px;border-radius:10px;font-weight:700;margin-top:10px;cursor:pointer;font-size:.82rem;">🗑 ล้างข้อมูลทั้งหมด</button>
-    </div>
-  </div>
-
+  <div class="fxs"><button class="btn" id="fxd">ใช้ผลเป็น Δ</button><button class="btn" id="fxe">ใช้ผลเป็น E</button></div>
+  <p class="note">แก้เลขได้เลย: แตะที่ตัวเลขบนจอ หรือกด ◀ ▶ เพื่อเลื่อนเคอร์เซอร์ แล้วกด DEL ลบ หรือพิมพ์แทรกได้ · แก้หลังกด = ก็ได้ (กด ◀ จะเรียกสมการกลับมา) · กด °′″ หลังตัวเลขแต่ละช่วง เช่น 127 °′″ 36 °′″ 26 °′″ − 180 = · SHIFT ใช้ฟังก์ชันสีเหลือง · ▶DMS แปลงผลเป็น ° ′ ″ · พิมพ์ด้วยคีย์บอร์ดได้เมื่อคลิกที่เครื่อง (ลูกศร Home End Delete ใช้ได้)</p>
+</section>
+</div>
 </div>
 
-<div class="app-footer">
-  <div class="credit-main">Designed &amp; Developed by <span class="credit-name">Jesada</span></div>
-  <div class="credit-sub">H-CURVE CALCULATOR PRO • ENGINEERING SURVEY TOOL</div>
+<div class="stack" style="margin-top:16px">
+ <section class="card">
+  <h2><span class="n">4</span>รูปโค้ง</h2>
+  <div id="svgbox"><div class="empty">รูปโค้งจะแสดงหลังคำนวณ</div></div><p class="cap">รูปประกอบแสดงตำแหน่งขององค์ประกอบโค้ง (ถ้า Δ น้อยกว่า 45° จะขยายมุมในรูปให้อ่านง่าย ไม่ตามมาตราส่วนจริง)</p>
+ </section>
+ <section class="card">
+  <h2><span class="n">5</span>ตารางวางผัง <small style="font-weight:400;color:var(--mut)">ตั้งกล้องที่ PC ตั้งศูนย์ไปที่ PI</small></h2>
+  <div class="tw"><table id="tb"><tbody><tr><td class="empty">—</td></tr></tbody></table></div>
+  <p class="note" id="sidenote"></p>
+  <ol class="note" style="padding-left:20px;line-height:1.7"><li><b>ตั้งกล้องที่ PC</b> เล็งไป <b>PI</b> แล้วตั้งมุม 0°00′00″</li><li>แต่ละแถว หมุนกล้องไปที่ <b>มุมอ่านกล้อง</b> (โค้งขวาหมุนตามเข็ม โค้งซ้ายหมุนทวนเข็ม)</li><li>ดึงเทปจาก <b>ตัวกล้อง (PC)</b> ไปตามแนวเล็ง ยาวเท่า <b>คอร์ดจาก PC</b> ปักหมุดที่ปลายเทป = STA นั้นบนโค้ง</li><li>ถ้าไกลหรือมีสิ่งบัง ใช้ <b>คอร์ดจากจุดก่อน</b>: จับเทปที่หมุดก่อนหน้า แล้วแกว่งปลายเทปไปตัดแนวเล็งของกล้อง</li><li>ตรวจปิดงานที่แถว PT: มุมต้องเท่ากับ Δ/2 และคอร์ดจาก PC เท่ากับคอร์ดยาว PC–PT</li></ol>
+  <div class="bar"><button class="btn p" id="cp">คัดลอกตาราง</button><button class="btn" id="csv">ดาวน์โหลด CSV</button></div>
+ </section>
+</div>
 </div>
 
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
-  let A_deg = 0;
-  let currentCalculation = null;
+const $=id=>document.getElementById(id), K=5729.578, RAD=Math.PI/180;
+let side='R', lastCsv='', cur=null;
+const num=id=>{const v=parseFloat($(id).value);return isNaN(v)?0:v};
+const has=id=>$(id).value.trim()!==''&&!isNaN(parseFloat($(id).value));
+const dms=d=>{let t=Math.round(d*3600),D=Math.floor(t/3600);t-=D*3600;const M=Math.floor(t/60),S=t-M*60;return D+'°'+String(M).padStart(2,'0')+'′'+String(S).padStart(2,'0')+'″'};
+const sta=x=>{const k=Math.floor(x/1000+1e-9),m=x-k*1000;return k+'+'+Math.max(0,m).toFixed(3).padStart(7,'0')};
+const f=(x,n=3)=>x.toFixed(n),fmt=f;
+function parseAng(s){const p=s.trim().split(/[^0-9.\-]+/).filter(Boolean).map(Number);if(!p.length||p.some(isNaN))return null;return p[0]+(p[1]||0)/60+(p[2]||0)/3600}
 
-  function switchPage(page) {
-    document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
-    
-    if (page === 'calc') {
-      document.querySelectorAll('.tab-btn')[0].classList.add('active');
-      document.getElementById('page_calc').classList.add('active');
-    } else if (page === 'history') {
-      document.querySelectorAll('.tab-btn')[1].classList.add('active');
-      document.getElementById('page_history').classList.add('active');
-      renderHistoryList();
-    }
-  }
+$('dir').onclick=e=>{const b=e.target.closest('button');if(!b)return;side=b.dataset.v;[...$('dir').children].forEach(x=>x.classList.toggle('on',x===b));calc()};
+document.querySelectorAll('input,select').forEach(i=>i.addEventListener('input',calc));
+$('theme').onclick=()=>{const r=document.documentElement,d=getComputedStyle(r).colorScheme==='dark';r.dataset.theme=d?'light':'dark'};
 
-  function formatStation(val) {
-    if (isNaN(val)) return "-";
-    const sign = val < 0 ? "-" : "";
-    const absVal = Math.abs(val);
-    const km = Math.floor(absVal / 1000);
-    const m = (absVal % 1000).toFixed(3);
-    return `${sign}${km}+${m.padStart(7, '0')}`;
-  }
+function calc(){
+ $('err').textContent='';
+ const Ef=num('E'),dl=num('dd')+num('dm')/60+num('ds')/3600;
+ const ready=has('E')&&dl>0&&dl<180&&Ef>0;
+ if(ready){const Rt=Ef/(1/Math.cos(dl*RAD/2)-1);$('dth').textContent=f(K/Rt,4);$('rth').textContent='R ทฤษฎี = '+f(Rt,3)+' ม.'}
+ else{$('dth').textContent='0.000';$('rth').textContent=''}
+ if(!ready||!($('m').value!==''||num('km')>0)){return clearOut()}
+ const Rt=Ef/(1/Math.cos(dl*RAD/2)-1),Dth=K/Rt;
+ const D=has('Din')&&num('Din')>0?num('Din'):Dth, R=K/D;
+ const hd=dl*RAD/2,T=R*Math.tan(hd),Ea=R*(1/Math.cos(hd)-1),L=R*dl*RAD,adj=2*T-L,dE=Ef-Ea;
+ const PI=num('km')*1000+num('m'),PC=PI-T,PT=PC+L,iv=+$('iv').value,step=+$('lay').value>0?+$('lay').value:iv;
+ const u=(v,n=3)=>`${f(v,n)}<i>ม.</i>`;
+ const el=[['Δ','มุมเบี่ยงเบน','Δ',dms(dl),'°'],['D','Degree of Curve','5729.578 / R',f(D,4),'°',1],['R','รัศมีความโค้ง','5729.578 / D',f(R),'ม.'],
+  ['T','ระยะสัมผัส','R·tan(Δ/2)',f(T),'ม.',1],['L','ความยาวโค้ง','R·Δ',f(L),'ม.',1],['E','ระยะภายนอก (จริง)','R·(sec(Δ/2)−1)',f(Ea),'ม.'],['M','ระยะกึ่งกลางคอร์ด','R·(1−cos(Δ/2))',f(R*(1-Math.cos(hd))),'ม.'],['C','คอร์ดยาว PC–PT','2R·sin(Δ/2)',f(2*R*Math.sin(hd)),'ม.'],['ADJ','ระยะปรับแก้','2T − L',f(adj),'ม.'],
+  ['ΔE','E ภาคสนาม − E จริง','ควรใกล้ 0',(dE>=0?'+':'')+f(dE),'ม.',0,Math.abs(dE)<0.05?'ok':'bad'],
+  ['PC','จุดเริ่มโค้ง','PI − T',sta(PC),'STA',1],['PI','จุดตัดเส้นสัมผัส','ข้อมูลป้อน',sta(PI),'STA'],['PT','จุดสิ้นสุดโค้ง','PC + L',sta(PT),'STA',1]];
+ const G=(t,i0,i1,c)=>`<div class="g" style="--c:${c}"><h3>${t}</h3>${el.slice(i0,i1).map((x,i)=>`<div class="r ${x[5]?'hl':''} ${x[6]||''}" style="animation-delay:${(i0+i)*35}ms"><b class="sy">${x[0]}</b><span class="nm">${x[1]}<small>${x[2]}</small></span><span class="v">${x[3]}<i>${x[4]}</i></span></div>`).join('')}</div>`;
+ $('out').innerHTML='<div class="cols"><div class="col">'+G('ขนาดโค้ง',0,3,'#0ea5e9')+G('สถานี',10,13,'#14b8a6')+'</div><div class="col">'+G('ระยะองค์ประกอบ',3,9,'#f97316')+G('ตรวจสอบกับค่าภาคสนาม',9,10,'#22c55e')+'</div></div>';
+ // station table
+ const useXY=has('pe')&&has('pn')&&$('az').value.trim()!=='';
+ const az=useXY?parseAng($('az').value):null;
+ const pts=[{t:'PC',st:PC}];
+ for(let k=Math.ceil((PC+1e-6)/step);k*step<PT-1e-6;k++){const s=k*step;pts.push({t:'',st:s,f:Math.abs(s/iv-Math.round(s/iv))<1e-6})}
+ pts.push({t:'PT',st:PT});
+ const sg=side==='R'?1:-1;let prev=0,rows=[],csv=[],xr=[];
+ const head=['จุด','STA','ระยะตามโค้ง (ม.)','มุมเบี่ยงเบน δ','มุมอ่านกล้อง','คอร์ดจาก PC','คอร์ดจากจุดก่อน'].concat(useXY?['E','N']:[]);
+ csv.push(head.join(','));
+ pts.forEach((p,i)=>{
+  const s=p.st-PC,dlt=s/(2*R)/RAD,ch=2*R*Math.sin(s/(2*R)),cp=2*R*Math.sin((s-prev)/(2*R));
+  const rd=side==='R'?dlt:(360-dlt)%360;
+  let c=[p.t||(p.f?'STA':'จุด'),sta(p.st),f(s),dms(dlt),dms(rd),f(ch),i?f(cp):'—'];
+  if(useXY&&az!=null){const pc=[num('pe')-T*Math.sin(az*RAD),num('pn')-T*Math.cos(az*RAD)],a=(az+sg*dlt)*RAD;c.push(f(pc[0]+ch*Math.sin(a)),f(pc[1]+ch*Math.cos(a)))}
+  else if(useXY)c.push('—','—');
+  rows.push(`<tr class="${p.t?'e':''}" style="animation-delay:${i*25}ms">${c.map(x=>`<td>${x}</td>`).join('')}</tr>`);csv.push(c.join(','));xr.push([c[0],c[1],s,c[3],c[4],ch,i?cp:'—'].concat(useXY?(az!=null?[+c[7],+c[8]]:['—','—']):[]));prev=s});
+ $('tb').innerHTML='<thead><tr>'+head.map(h=>`<th>${h}</th>`).join('')+'</tr></thead><tbody>'+rows.join('')+'</tbody>';
+ lastCsv=csv.join('\n');
+ $('sidenote').textContent=side==='R'?'โค้งขวา: หมุนกล้องตามเข็มนาฬิกา มุมอ่านกล้อง = δ':'โค้งซ้าย: หมุนกล้องทวนเข็มนาฬิกา มุมอ่านกล้อง = 360° − δ (วงกลมขวา)';
+ // next station
+ const nx=pts[1]&&pts[1].t===''?pts[1]:pts[pts.length-1];
+ const ns=nx.st-PC;
+ $('next').hidden=false;
+ $('next').innerHTML=`<span>⌖ จุดยิงถัดไปจาก PC</span><b>STA ${sta(nx.st)}</b><span>มุม ${dms(side==='R'?ns/(2*R)/RAD:(360-ns/(2*R)/RAD)%360)} • ดึงเทป <b>${f(2*R*Math.sin(ns/(2*R)))}</b> ม.</span>`;
+ const nf=(Math.floor(PI/iv+1e-9)+1)*iv,dN=nf-PI+adj;
+ $('next2').hidden=false;$('next2').innerHTML=`<small>⌖ STA เต็มถัดไป (ช่วง ${iv} ม.)</small><div class="t"><b>${sta(nf)}</b><span>STA PI ${sta(PI)}</span></div><div class="big">${f(dN)}<i>ม.</i></div><small>(วัดระยะดึงเทปออกจากตัวกล้อง) = STA เต็มถัดไป − STA PI + ADJ</small>`;
+ cur={nm:$('nm').value.trim(),side,R,D,T,L,Ea,hd,dl,Ef,adj,dE,PC,PI,PT,iv,az:az!=null?az:90,hasXY:useXY&&az!=null,pe:num('pe'),pn:num('pn'),pts:pts.map(p=>p.st),tags:pts.map(p=>p.t),head,xr,el};
+ $('xl').disabled=$('dx').disabled=false;
+ const okE=Math.abs(dE)<0.05;
+ $('hero').innerHTML=`<div class="hero"><div class="hc a"><small>D ใช้งานจริง</small><b>${f(D,4)}<i>°</i></b></div><div class="hc" style="--c:#f97316"><small>รัศมี R</small><b>${f(R)}<i>ม.</i></b></div><div class="hc" style="--c:#14b8a6"><small>STA PC</small><b>${sta(PC)}</b></div><div class="hc" style="--c:#14b8a6"><small>STA PT</small><b>${sta(PT)}</b></div></div><div class="chips"><span class="chip">T = ${f(T)}</span><span class="chip">L = ${f(L)}</span><span class="chip">E = ${f(Ea)}</span><span class="chip ${okE?'ok':'bad'}">ΔE ${(dE>=0?'+':'')+f(dE)} ${okE?'✓':'⚠'}</span></div>`;
+ draw(cur,pts.map(p=>p.st-PC));
+}
+function clearOut(){$('out').innerHTML='<div class="empty">กรอก E, Δ และ STA PI เพื่อเริ่มคำนวณ</div>';$('next').hidden=true;$('next2').hidden=true;$('hero').innerHTML='<div class="empty">กรอกข้อมูลเพื่อดูสรุปผล</div>';$('svgbox').innerHTML='<div class="empty">รูปโค้งจะแสดงหลังคำนวณ</div>';$('tb').innerHTML='<tbody><tr><td class="empty">—</td></tr></tbody>';lastCsv='';cur=null;$('xl').disabled=$('dx').disabled=true}
 
-  function getAngleDecimal() {
-    const d = parseFloat(document.getElementById('deg').value) || 0;
-    const m = parseFloat(document.getElementById('min').value) || 0;
-    const s = parseFloat(document.getElementById('sec').value) || 0;
-    return d + (m / 60) + (s / 3600);
-  }
+function draw(c,ss){
+ const g=c.side==='R'?1:-1,R=100,h=Math.max(c.dl,30)*Math.PI/360,sn=Math.sin(h),cs=Math.cos(h),m='ม.',S=2*R*sn;
+ const Wv=S/.56,f=Wv*.02,rho=2.6*f;
+ const pc=[-R*sn,R*cs],pt=[R*sn,R*cs],pi=[0,R/cs],ma=[0,R],mc=[0,R*cs],O=[0,0];
+ const stub=Math.max(S*.14,4*f),sp=a=>[a[0]*(1-stub/R),a[1]*(1-stub/R)];
+ const yR=R*cs-stub*cs-3*f,y0=yR-1.6*f,y1=R/cs+4.8*f,x0=-Wv/2,x1=Wv/2,H=y1-y0,vy=g>0?-y1:y0;
+ const CT='#38bdf8',CL='#fb923c',CE='#22c55e',CM='#14b8a6',CD='#e879f9',CR='#f87171',CC='#a78bfa',n=v=>v.toFixed(2);
+ const P=(x,y)=>[x,-g*y],rOf=a=>[R*Math.sin(a),R*Math.cos(a)],mid=(a,b)=>[(a[0]+b[0])/2,(a[1]+b[1])/2];
+ const ln=(a,b,col,w,d)=>{const p=P(...a),q=P(...b);return `<line x1="${n(p[0])}" y1="${n(p[1])}" x2="${n(q[0])}" y2="${n(q[1])}" stroke="${col}" stroke-width="${n(f*w)}"${d?` stroke-dasharray="${n(f*d)} ${n(f*d*.7)}"`:''} stroke-linecap="round"/>`};
+ const poly=(fn,a0,a1,k)=>{let d='';for(let i=0;i<=k;i++){const p=P(...fn(a0+(a1-a0)*i/k));d+=(i?'L':'M')+n(p[0])+' '+n(p[1])}return d};
+ const tx=(q,s,dx,dy,an,o={})=>{const p=P(...q);return `<text x="${n(p[0]+dx*f)}" y="${n(p[1]+(o.fix?1:g)*dy*f)}" text-anchor="${{e:'end',s:'start',m:'middle'}[an]}" font-size="${n(f*(o.z||1.2))}" font-weight="${o.w||700}" fill="${o.c||'var(--ink)'}">${s}</text>`};
+ const dot=(q,r,col)=>{const p=P(...q);return `<circle cx="${n(p[0])}" cy="${n(p[1])}" r="${n(f*r)}" fill="${col}" stroke="var(--inp)" stroke-width="${n(f*.1)}"/>`};
+ const dots=ss.map((s,i)=>{const p=P(...rOf(-h+s/c.L*2*h));return `<circle class="pt" style="animation-delay:${(.4+i*.04).toFixed(2)}s" cx="${n(p[0])}" cy="${n(p[1])}" r="${n(f*.16)}" fill="var(--inp)" stroke="${CL}" stroke-width="${n(f*.07)}"/>`}).join('');
+ const yE=(pi[1]+ma[1])/2,yL=ma[1]+.9*f,xT=(pi[1]-yL)/Math.tan(h),eT=[xT+1.5*f,yL],tm=mid(pc,pi);
+ const svg=`<svg viewBox="${n(x0)} ${n(vy)} ${n(x1-x0)} ${n(H)}" preserveAspectRatio="xMidYMid meet" role="img" aria-label="รูปโค้งราบวงกลม">
+ ${ln(pc,sp(pc),'var(--mut)',.06,.9)}${ln(pt,sp(pt),'var(--mut)',.06,.9)}${ln(pc,pt,'var(--mut)',.05,.22)}
+ ${ln(pc,pi,CT,.1)}${ln(pi,pt,CT,.1)}${ln(pi,[pi[0]+rho*1.7*cs,pi[1]+rho*1.7*sn],'var(--mut)',.05,.5)}
+ <path d="${poly(a=>[pi[0]+rho*Math.cos(a),pi[1]+rho*Math.sin(a)],h,-h,20)}" fill="none" stroke="${CD}" stroke-width="${n(f*.09)}"/>
+ ${ln(pi,ma,CE,.08,.35)}${ln([0,yE],[eT[0]-.4*f,yL],CE,.05,.3)}
+ <path class="arc" pathLength="1" d="${poly(rOf,-h,h,90)}" fill="none" stroke="${CL}" stroke-width="${n(f*.16)}" stroke-linecap="round"/>
+ ${dots}${dot(pc,.22,CL)}${dot(pt,.22,CL)}${dot(pi,.22,CT)}
+ ${tx(pc,'PC',-1.5,.9,'e',{c:CL,z:1.4})}${tx(pc,'STA '+sta(c.PC),-1.5,2.5,'e',{c:'var(--mut)',z:1,w:600})}
+ ${tx(pt,'PT',1.5,.9,'s',{c:CL,z:1.4})}${tx(pt,'STA '+sta(c.PT),1.5,2.5,'s',{c:'var(--mut)',z:1,w:600})}
+ ${tx(pi,'PI',-1.4,-2.7,'e',{c:CT,z:1.4})}${tx(pi,'STA '+sta(c.PI),-1.4,-1.3,'e',{c:'var(--mut)',z:1,w:600})}
+ ${tx(pi,'Δ = '+dms(c.dl),rho/f+.8,-1.1,'s',{c:CD})}
+ ${tx(tm,'T = '+fmt(c.T)+' '+m,-.7,-1.3,'e',{c:CT})}
+ ${tx(eT,'E = '+fmt(c.Ea)+' '+m,0,0,'s',{c:CE})}
+ ${tx([0,R*cs],'L = '+fmt(c.L)+' '+m,0,-(-1.9),'m',{c:CL})}
+ ${tx([0,yR],'R = '+fmt(c.R)+' '+m+' (จุดศูนย์กลางอยู่นอกภาพ '+(g>0?'↓':'↑')+')',0,0,'m',{c:'var(--mut)',z:1.1,w:600,fix:1})}
+ </svg>`;
+ const it=[['D','Degree of Curve',fmt(c.D,4)+'°',CL],['M','กึ่งกลางคอร์ด',fmt(c.R*(1-Math.cos(c.hd)))+' '+m,CM],['C','คอร์ดยาว PC–PT',fmt(2*c.R*Math.sin(c.hd))+' '+m,CC]];
+ $('svgbox').innerHTML=svg+'<div class="lg">'+it.map(x=>`<div class="li"><i style="background:${x[3]}">${x[0]}</i><div><span>${x[1]}</span><b>${x[2]}</b></div></div>`).join('')+`</div><div class="cap" style="padding:0 12px 10px;margin:0">${c.side==='R'?'โค้งขวา':'โค้งซ้าย'} · เดินทาง PC → PT (ซ้าย → ขวา) · จุด = สถานีวางผัง${c.dl<30?' · ขยายมุมในรูปให้อ่านง่าย':''}</div>`;
+}
 
-  function calculateTheoreticalD() {
-    A_deg = getAngleDecimal();
-    const E_field = parseFloat(document.getElementById('e_field').value);
-    if (!A_deg || isNaN(E_field)) return alert("⚠️️ กรุณาป้อนค่า E และมุมให้ครบถ้วน");
+/* ---------- ส่งออก ---------- */
+const fnm=()=>(($('nm').value.trim()||'curve').replace(/[\\\/:*?"<>|]/g,'_'));
+async function saveFile(name,data){
+ try{const d=window.claude&&await claude.use('downloads');if(d){await d.save({filename:name,data});return true}}catch(e){if(e&&e.code==='declined')return false}
+ try{const b=data instanceof Blob?data:new Blob([data]);const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;a.click();return true}catch(e){return false}
+}
+const flash=(id,t,t0)=>{$(id).textContent=t;setTimeout(()=>$(id).textContent=t0,1600)};
+function zip(name,str){
+ const enc=new TextEncoder(),nb=enc.encode(name),db=enc.encode(str),tb=[];
+ for(let n=0,c;n<256;n++){c=n;for(let k=0;k<8;k++)c=c&1?0xEDB88320^(c>>>1):c>>>1;tb[n]=c>>>0}
+ let crc=-1;for(const b of db)crc=tb[(crc^b)&255]^(crc>>>8);crc=(crc^-1)>>>0;
+ const d=new Date(),tm=(d.getHours()<<11)|(d.getMinutes()<<5)|(d.getSeconds()>>1),dt=((d.getFullYear()-1980)<<9)|((d.getMonth()+1)<<5)|d.getDate();
+ const cd=46+nb.length,out=new Uint8Array(30+nb.length+db.length+cd+22),v=new DataView(out.buffer);let o=0;
+ const w2=x=>{v.setUint16(o,x,true);o+=2},w4=x=>{v.setUint32(o,x>>>0,true);o+=4};
+ w4(0x04034b50);w2(20);w2(0x0800);w2(0);w2(tm);w2(dt);w4(crc);w4(db.length);w4(db.length);w2(nb.length);w2(0);out.set(nb,o);o+=nb.length;out.set(db,o);o+=db.length;
+ const cs=o;w4(0x02014b50);w2(20);w2(20);w2(0x0800);w2(0);w2(tm);w2(dt);w4(crc);w4(db.length);w4(db.length);w2(nb.length);w2(0);w2(0);w2(0);w2(0);w4(0);w4(0);out.set(nb,o);o+=nb.length;
+ w4(0x06054b50);w2(0);w2(0);w2(1);w2(1);w4(cd);w4(cs);w2(0);return out}
+function dxf(c){
+ const sg=c.side==='R'?1:-1,R=c.R,az=c.az,Rd=Math.PI/180,sn=Math.sin,cn=Math.cos,n=v=>(+v).toFixed(4);
+ const pc=c.hasXY?[c.pe-c.T*sn(az*Rd),c.pn-c.T*cn(az*Rd)]:[0,0];
+ const O=[pc[0]+R*sn((az+sg*90)*Rd),pc[1]+R*cn((az+sg*90)*Rd)];
+ const bb=s=>az-sg*90+sg*(s/R)/Rd,P=s=>{const b=bb(s)*Rd;return[O[0]+R*sn(b),O[1]+R*cn(b)]};
+ const pi=[pc[0]+c.T*sn(az*Rd),pc[1]+c.T*cn(az*Rd)],pt=P(c.L),ma=P(c.L/2),mc=[(pc[0]+pt[0])/2,(pc[1]+pt[1])/2];
+ const th=Math.max(c.L,c.T)*.03,o=[],q=(...a)=>o.push(...a),ang=b=>((90-b)%360+360)%360;
+ const LAY=[['CURVE',5],['TANGENT',7],['RADIUS',8],['CHORD',3],['DIM',2],['STA_PT',1],['STA_TXT',6]];
+ q(0,'SECTION',2,'HEADER',9,'$ACADVER',1,'AC1009',0,'ENDSEC',0,'SECTION',2,'TABLES',0,'TABLE',2,'LTYPE',70,1,0,'LTYPE',2,'CONTINUOUS',70,0,3,'Solid line',72,65,73,0,40,0,0,'ENDTAB',0,'TABLE',2,'LAYER',70,LAY.length);
+ LAY.forEach(l=>q(0,'LAYER',2,l[0],70,0,62,l[1],6,'CONTINUOUS'));q(0,'ENDTAB',0,'ENDSEC',0,'SECTION',2,'ENTITIES');
+ const LN=(l,a,b)=>q(0,'LINE',8,l,10,n(a[0]),20,n(a[1]),30,0,11,n(b[0]),21,n(b[1]),31,0);
+ const CI=(l,p,r)=>q(0,'CIRCLE',8,l,10,n(p[0]),20,n(p[1]),30,0,40,n(r)),PO=(l,p)=>q(0,'POINT',8,l,10,n(p[0]),20,n(p[1]),30,0);
+ const TX=(l,p,s,j=0,rot=0,h=th)=>{q(0,'TEXT',8,l,10,n(p[0]),20,n(p[1]),30,0,40,n(h),1,s,50,n(rot));if(j)q(72,j,11,n(p[0]),21,n(p[1]),31,0)};
+ const DT=(a,b,s)=>{let a1=Math.atan2(b[1]-a[1],b[0]-a[0])/Rd;if(a1>90)a1-=180;if(a1<=-90)a1+=180;const r=a1*Rd;TX('DIM',[(a[0]+b[0])/2-sn(r)*th*.8,(a[1]+b[1])/2+cn(r)*th*.8],s,1,a1)};
+ const F=x=>x.toFixed(3);
+ q(0,'ARC',8,'CURVE',10,n(O[0]),20,n(O[1]),30,0,40,n(R),50,n(sg>0?ang(bb(c.L)):ang(bb(0))),51,n(sg>0?ang(bb(0)):ang(bb(c.L))));
+ LN('TANGENT',pc,pi);LN('TANGENT',pi,pt);LN('RADIUS',O,pc);LN('RADIUS',O,pt);LN('CHORD',pc,pt);LN('DIM',pi,ma);LN('DIM',mc,ma);
+ DT(pc,pi,'T='+F(c.T));DT(pi,pt,'T='+F(c.T));DT(O,pc,'R='+F(R));DT(O,pt,'R='+F(R));DT(pc,pt,'C='+F(2*R*sn(c.hd)));DT(pi,ma,'E='+F(c.Ea));DT(mc,ma,'M='+F(R*(1-cn(c.hd))));
+ {const u=[(ma[0]-O[0])/R,(ma[1]-O[1])/R];TX('DIM',[ma[0]+u[0]*th*3,ma[1]+u[1]*th*3],'L='+F(c.L),1)}
+ c.pts.forEach((st,i)=>{const p=P(st-c.PC),u=[(p[0]-O[0])/R,(p[1]-O[1])/R];PO('STA_PT',p);CI('STA_PT',p,th*.45);
+  TX('STA_TXT',[p[0]+u[0]*th*1.2,p[1]+u[1]*th*1.2],(c.tags[i]?c.tags[i]+'  ':'')+'STA '+sta(st),u[0]<-.1?2:0,0,th*.8)});
+ PO('STA_PT',pi);CI('STA_PT',pi,th*.45);TX('STA_TXT',[pi[0]+th*.8,pi[1]+th*.8],'PI  STA '+sta(c.PI),0,0,th*.8);
+ PO('STA_PT',O);CI('STA_PT',O,th*.45);TX('STA_TXT',[O[0]+th*.8,O[1]-th*1.4],'O',0,0,th*.8);
+ q(0,'ENDSEC',0,'EOF');return o.join('\r\n')+'\r\n'}
+function xlsx(){
+ const c=cur;if(!c)return;if(!window.XLSX){flash('xl','โหลด Excel library ไม่ได้','บันทึกลง Excel (.xlsx)');return}
+ const a1=[['รายการ','ค่า','หน่วย'],['ชื่อโค้ง',c.nm||'-'],['ทิศทางโค้ง',c.side==='R'?'โค้งขวา':'โค้งซ้าย'],['STA PI',sta(c.PI)],['STA PI (ระยะรวม)',c.PI,'ม.'],['E ภาคสนาม',c.Ef,'ม.'],['Δ',c.dl,'องศา'],['Δ (° ′ ″)',dms(c.dl)],['D ที่ใช้งาน',c.D,'องศา'],['รัศมี R',c.R,'ม.'],['ช่วงสถานีวางผัง',c.iv,'ม.']];
+ if(c.hasXY)a1.push(['E ของ PI',c.pe,'ม.'],['N ของ PI',c.pn,'ม.'],['อะซิมุท PC→PI',c.az,'องศา']);
+ const a2=[['สัญลักษณ์','รายการ','สูตร','ค่า','หน่วย']].concat(c.el.map(x=>[x[0],x[1],x[2],x[3],x[4]]));
+ const a3=[c.head].concat(c.xr),wb=XLSX.utils.book_new();
+ [[a1,'ข้อมูลป้อน',[22,22,10]],[a2,'องค์ประกอบโค้ง',[10,26,20,16,8]],[a3,'ตารางวางผัง',c.head.map(()=>16)]].forEach(([a,nm,w])=>{const s=XLSX.utils.aoa_to_sheet(a);s['!cols']=w.map(x=>({wch:x}));XLSX.utils.book_append_sheet(wb,s,nm)});
+ saveFile(fnm()+'.xlsx',XLSX.write(wb,{bookType:'xlsx',type:'array'})).then(ok=>ok&&flash('xl','บันทึกแล้ว ✓','บันทึกลง Excel (.xlsx)'))}
+$('xl').onclick=xlsx;
+$('dx').onclick=()=>{if(!cur)return;const n=fnm();saveFile(n+'_DXF.zip',zip(n+'.dxf',dxf(cur))).then(ok=>ok&&flash('dx','ส่งออกแล้ว ✓','ส่งออก DXF/DWG (.zip)'))};
+$('cp').onclick=async()=>{if(!lastCsv)return;try{await navigator.clipboard.writeText(lastCsv.replace(/,/g,'\t'));$('cp').textContent='คัดลอกแล้ว ✓'}catch(e){$('cp').textContent='คัดลอกไม่ได้'}setTimeout(()=>$('cp').textContent='คัดลอกตาราง',1500)};
+$('csv').onclick=()=>{if(lastCsv)saveFile(fnm()+'.csv','\ufeff'+lastCsv)};
 
-    const A_rad = A_deg * (Math.PI / 180);
-    const T = E_field / Math.tan(A_rad / 4);
-    const R = T / Math.tan(A_rad / 2);
-    const D = 5729.578 / R;
+/* ---------- งานที่บันทึก ---------- */
+const WK='hcurve.works.v1',FIELDS=['nm','km','m','E','dd','dm','ds','Din','iv','lay','pe','pn','az'];
+let works=[];try{works=JSON.parse(localStorage.getItem(WK)||'[]')||[]}catch(e){}
+const persist=()=>{try{localStorage.setItem(WK,JSON.stringify(works))}catch(e){}};
+const esc=x=>String(x).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function solveW(w){const Ef=+w.E,dl=(+w.dd||0)+(+w.dm||0)/60+(+w.ds||0)/3600;if(!(Ef>0&&dl>0&&dl<180))return null;const Rt=Ef/(1/Math.cos(dl*RAD/2)-1),D=+w.Din>0?+w.Din:K/Rt,R=K/D,T=R*Math.tan(dl*RAD/2),L=R*dl*RAD,PI=(+w.km||0)*1000+(+w.m||0);return{dl,D,R,T,L,PI,PC:PI-T,PT:PI-T+L}}
+function renderWorks(){
+ $('wlist').innerHTML=works.length?works.map((w,i)=>{const r=solveW(w);return `<div class="wi"><div><b>${esc(w.nm||'โค้งที่ '+(i+1))}</b> <small>${w.side==='R'?'ขวา':'ซ้าย'}</small><br><small>${r?'PI '+sta(r.PI)+' · D '+f(r.D,3)+'° · R '+f(r.R,2)+' ม.':'ข้อมูลไม่ครบ'}</small></div><button class="btn" data-o="${i}">เปิด</button><button class="btn" data-d="${i}">ลบ</button></div>`}).join(''):'<div class="empty">ยังไม่มีงานที่บันทึก</div>';
+ $('wclr').disabled=!works.length}
+function grab(){const w={side};FIELDS.forEach(k=>w[k]=$(k).value);if(!w.nm.trim())w.nm='โค้งที่ '+(works.length+1);return w}
+function putW(w){FIELDS.forEach(k=>{if(w[k]!=null)$(k).value=w[k]});side=w.side==='L'?'L':'R';[...$('dir').children].forEach(b=>b.classList.toggle('on',b.dataset.v===side));calc()}
+function saveCur(){const w=grab(),i=works.findIndex(x=>x.nm===w.nm);if(i>=0)works[i]=w;else works.push(w);persist();renderWorks()}
+function reportHtml(){
+ const data=JSON.stringify({app:'h-curve',v:1,works}).replace(/</g,'\\u003c');
+ const rows=works.map(w=>{const r=solveW(w),x=v=>r?v:'-';return `<tr><td>${esc(w.nm)}</td><td>${w.side==='R'?'ขวา':'ซ้าย'}</td><td>${x(r&&sta(r.PI))}</td><td>${esc(w.E)}</td><td>${x(r&&dms(r.dl))}</td><td>${x(r&&f(r.D,4))}</td><td>${x(r&&f(r.R))}</td><td>${x(r&&f(r.T))}</td><td>${x(r&&f(r.L))}</td><td>${x(r&&sta(r.PC))}</td><td>${x(r&&sta(r.PT))}</td></tr>`}).join('');
+ return `<!DOCTYPE html><html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>งานโค้งราบ H-Curve</title><style>body{font:14px/1.5 "Sarabun",system-ui,sans-serif;margin:20px;color:#14202e}table{border-collapse:collapse}th,td{border:1px solid #cbd5e1;padding:6px 10px;text-align:right;white-space:nowrap}th{background:#f1f5f9}td:first-child{text-align:left}.s{overflow-x:auto}</style></head><body><h1>งานโค้งราบวงกลม (H-Curve)</h1><p>บันทึกเมื่อ ${new Date().toLocaleString('th-TH')} · นำกลับเข้าเครื่องคำนวณด้วยปุ่ม “นำเข้าจากไฟล์ HTML”</p><div class="s"><table><thead><tr>${['ชื่อโค้ง','ทิศทาง','STA PI','E ภาคสนาม','Δ','D','R','T','L','STA PC','STA PT'].map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${rows}</tbody></table></div><script type="application/json" id="hcurve-data">${data}<\/script></body></html>`}
+$('wsave').onclick=()=>{saveCur();flash('wsave','บันทึกแล้ว ✓','บันทึกโค้งนี้')};
+$('wexp').onclick=()=>{if(cur)saveCur();if(!works.length){flash('wexp','ยังไม่มีงานให้บันทึก','บันทึกเป็นไฟล์ HTML');return}saveFile('hcurve_work.html',reportHtml()).then(ok=>ok&&flash('wexp','บันทึกแล้ว ✓','บันทึกเป็นไฟล์ HTML'))};
+$('wclr').onclick=()=>{if(confirm('ล้างรายการงานที่บันทึกทั้งหมด?')){works=[];persist();renderWorks()}};
+$('wlist').onclick=e=>{const b=e.target.closest('button');if(!b)return;if(b.dataset.o!=null)putW(works[+b.dataset.o]);else if(b.dataset.d!=null){works.splice(+b.dataset.d,1);persist();renderWorks()}};
+$('wimp').onclick=()=>$('wfile').click();
+$('wfile').onchange=async e=>{const fl=e.target.files[0];e.target.value='';if(!fl)return;
+ try{const el=new DOMParser().parseFromString(await fl.text(),'text/html').getElementById('hcurve-data'),d=JSON.parse(el.textContent);
+  if(d.app!=='h-curve'||!Array.isArray(d.works))throw 0;
+  d.works.forEach(w=>{const i=works.findIndex(x=>x.nm===w.nm);if(i>=0)works[i]=w;else works.push(w)});
+  persist();renderWorks();if(d.works[0])putW(d.works[0]);flash('wimp','นำเข้า '+d.works.length+' รายการ ✓','นำเข้าจากไฟล์ HTML')}
+ catch(err){flash('wimp','ไฟล์ไม่ถูกต้อง','นำเข้าจากไฟล์ HTML')}};
+renderWorks();
 
-    document.getElementById('d_calc_val').innerText = D.toFixed(3);
-    document.getElementById('d_input').value = Math.round(D);
-    document.getElementById('calc_d_area').style.display = 'block';
-  }
+/* ---------- เครื่องคิดเลข fx-5800P style ---------- */
+(()=>{
+const g=id=>document.getElementById(id);
+let T=[],cp=0,res=null,err='',shift=false,deg=true,ans=0,done=false,showD=false;
+const K=[
+[['SHIFT','','@s','','sh'],['DEG','','@r','','fn'],['Ans','','Ans','','fn'],['π','e','π','e','fn'],['▶DMS','','@m','','fn']],
+[['sin','sin⁻¹','sin(','asin(','fn'],['cos','cos⁻¹','cos(','acos(','fn'],['tan','tan⁻¹','tan(','atan(','fn'],['ln','eˣ','ln(','e^(','fn'],['log','10ˣ','log(','10^(','fn']],
+[['x²','√','^2','√(','fn'],['xʸ','x⁻¹','^','^(-1)','fn'],['(','','(','','fn'],[')','',')','','fn'],['°′″','','@d','','fn']],
+[['7','','7','','dg'],['8','','8','','dg'],['9','','9','','dg'],['DEL','','@x','','ac'],['AC','','@c','','ac']],
+[['4','','4','','dg'],['5','','5','','dg'],['6','','6','','dg'],['×','','×','','op'],['÷','','÷','','op']],
+[['1','','1','','dg'],['2','','2','','dg'],['3','','3','','dg'],['+','','+','','op'],['−','','−','','op']],
+[['0','','0','','dg'],['.','','.','','dg'],['EXP','','E','','dg'],['(−)','','-','','dg'],['=','','@e','','eq']]];
+g('kg').innerHTML=K.map((r,i)=>r.map((k,j)=>`<button class="fk ${k[4]}" data-k="${i},${j}"><small>${k[1]}</small>${k[0]}</button>`).join('')).join('');
+const cl=v=>Math.abs(v)<1e-12?0:v;
+function parse(src){
+ src=src.replace(/\s+/g,'').replace(/(\d+(?:\.\d+)?)°(?:(\d+(?:\.\d+)?)′)?(?:(\d+(?:\.\d+)?)″)?/g,(m,d,mi,se)=>'('+(+d+(mi?+mi/60:0)+(se?+se/3600:0))+')');
+ const re=/(\d+(?:\.\d+)?(?:E[+-]?\d+)?|\.\d+|Ans|π|e|asin|acos|atan|sin|cos|tan|ln|log|√|[-−+×÷^()])/y,t=[];let p=0;
+ while(p<src.length){re.lastIndex=p;const m=re.exec(src);if(!m||m.index!==p)throw Error('Syntax ERROR');t.push(m[1]);p=re.lastIndex}
+ let i=0;const pk=()=>t[i],nx=()=>t[i++],isF=s=>s&&/^(asin|acos|atan|sin|cos|tan|ln|log|√)$/.test(s),st=s=>s&&(/^[\d.]/.test(s)||s==='Ans'||s==='π'||s==='e'||s==='('||isF(s));
+ const M=()=>{throw Error('Math ERROR')};
+ const fn=(s,a)=>{const R=x=>deg?x*Math.PI/180:x,B=x=>deg?x*180/Math.PI:x;
+  switch(s){case'sin':return cl(Math.sin(R(a)));case'cos':return cl(Math.cos(R(a)));case'tan':if(Math.abs(Math.cos(R(a)))<1e-12)M();return cl(Math.tan(R(a)));
+  case'asin':if(Math.abs(a)>1)M();return B(Math.asin(a));case'acos':if(Math.abs(a)>1)M();return B(Math.acos(a));case'atan':return B(Math.atan(a));
+  case'ln':if(a<=0)M();return Math.log(a);case'log':if(a<=0)M();return Math.log10(a);case'√':if(a<0)M();return Math.sqrt(a)}};
+ function E(){let v=T();while(pk()==='+'||pk()==='-'||pk()==='−'){const o=nx(),r=T();v=o==='+'?v+r:v-r}return v}
+ function T(){let v=U();for(;;){const s=pk();if(s==='×'||s==='÷'){nx();const r=U();if(s==='÷'&&r===0)M();v=s==='×'?v*r:v/r}else if(st(s))v*=U();else break}return v}
+ function U(){if(pk()==='-'||pk()==='−'){nx();return -U()}if(pk()==='+'){nx();return U()}return W()}
+ function W(){const b=P();if(pk()==='^'){nx();const e=U();if(b<0&&!Number.isInteger(e))M();return Math.pow(b,e)}return b}
+ function P(){const s=nx();if(s==null)throw Error('Syntax ERROR');if(/^[\d.]/.test(s))return parseFloat(s);if(s==='π')return Math.PI;if(s==='e')return Math.E;if(s==='Ans')return ans;
+  if(s==='('){const v=E();if(pk()===')')nx();return v}
+  if(isF(s)){let a;if(pk()==='('){nx();a=E();if(pk()===')')nx()}else a=U();return fn(s,a)}throw Error('Syntax ERROR')}
+ const v=E();if(i<t.length)throw Error('Syntax ERROR');if(!isFinite(v))M();return Number(v.toPrecision(12))}
+const fN=v=>(Math.abs(v)>=1e10||(v!==0&&Math.abs(v)<1e-9))?v.toExponential(6).replace(/\.?0+e/,'e'):String(Number(v.toPrecision(10)));
+const fD=x=>{const t0=Math.round(Math.abs(x)*3600*100)/100,D=Math.floor(t0/3600),r=t0-D*3600,M=Math.floor(r/60),S=r-M*60;return (x<0&&t0>0?'−':'')+D+'°'+String(M).padStart(2,'0')+'′'+(+S.toFixed(2))+'″'};
+const TR=/asin\(|acos\(|atan\(|sin\(|cos\(|tan\(|ln\(|log\(|√\(|e\^\(|10\^\(|Ans|[\s\S]/g,tk=x=>x.match(TR)||[];
+function show(){g('lS').textContent=shift?'S':'';g('lM').textContent=deg?'DEG':'RAD';g('lD').textContent=showD?'DMS':'';
+ const L=g('lex');L.classList.toggle('dn',done);
+ L.innerHTML=T.length?T.map((t,i)=>(i===cp?'<i class="cr"></i>':'')+`<span data-i="${i}">${t}</span>`).join('')+(cp===T.length?'<i class="cr"></i>':''):'<i class="cr"></i><span class="z">0</span>';
+ const c=L.querySelector('.cr');if(c){const x=c.offsetLeft;if(x>L.scrollLeft+L.clientWidth-24)L.scrollLeft=x-L.clientWidth+24;else if(x<L.scrollLeft+8)L.scrollLeft=Math.max(0,x-24)}
+ g('lrs').textContent=err||(res==null?'':showD?fD(res):fN(res));
+ document.querySelector('.fk.sh').classList.toggle('on',shift);
+ document.querySelector('[data-k="0,1"]').lastChild.textContent=deg?'DEG':'RAD'}
+function edit(){if(done){done=false}}
+function ins(t){if(done){T=/^[+×÷−^]/.test(t)?['Ans']:[];cp=T.length;done=false}err='';showD=false;const a=tk(t);T.splice(cp,0,...a);cp+=a.length}
+function act(a){
+ if(a==='@r'){deg=!deg;return}
+ if(a==='@c'){T=[];cp=0;res=null;err='';done=false;showD=false;return}
+ if(a==='@x'){if(done){done=false;cp=T.length}if(cp>0){T.splice(cp-1,1);cp--}err='';return}
+ if(a==='@f'){if(done){done=false;cp=0}if(cp<T.length)T.splice(cp,1);err='';return}
+ if(a==='@l'){if(done){done=false;cp=T.length}else cp=Math.max(0,cp-1);return}
+ if(a==='@rr'){if(done){done=false;cp=0}else cp=Math.min(T.length,cp+1);return}
+ if(a==='@h'){done=false;cp=0;return}
+ if(a==='@n'){done=false;cp=T.length;return}
+ if(a==='@e'){try{const v=parse(T.join('')||'0');ans=v;res=v;err='';done=true;showD=false}catch(e){err=e.message||'Syntax ERROR';res=null}return}
+ if(a==='@m'){if(res!=null)showD=!showD;return}
+ if(a==='@d'){if(done){T=[];cp=0;done=false}const tail=(T.slice(0,cp).join('').match(/[\d.°′″]*$/)||[''])[0];ins(tail.includes('′')?'″':tail.includes('°')?'′':'°');return}
+ ins(a)}
+function press(k){if(k[2]==='@s'){shift=!shift;show();return}
+ let a=k[2];if(shift&&k[3])a=k[3];shift=false;act(a);show()}
+g('kg').onclick=e=>{const b=e.target.closest('.fk');if(!b)return;const[i,j]=b.dataset.k.split(',');press(K[i][j])};
+g('rp').onclick=e=>{const b=e.target.closest('button');if(!b)return;act(b.dataset.a);show()};
+g('lex').onclick=e=>{const sp=e.target.closest('span[data-i]');if(sp){const r=sp.getBoundingClientRect();cp=+sp.dataset.i+(e.clientX>r.left+r.width/2?1:0)}else cp=T.length;done=false;show();g('fxb').focus({preventScroll:true})};
+const KM={ArrowLeft:'@l',ArrowRight:'@rr',Home:'@h',End:'@n',Enter:'@e','=':'@e',Backspace:'@x',Delete:'@f',Escape:'@c','*':'×','/':'÷','-':'−'};
+g('fxb').onkeydown=e=>{const c=KM[e.key]||(/^[0-9.+()^E]$/.test(e.key)?e.key:null);if(!c)return;e.preventDefault();act(c);show()};
+const toDeg=()=>res==null?null:res;
+g('fxd').onclick=()=>{const v=toDeg();if(v==null)return;const t=Math.round(Math.abs(v)*360000)/100,D=Math.floor(t/3600),r=t-D*3600,M=Math.floor(r/60);$('dd').value=D;$('dm').value=M;$('ds').value=+(r-M*60).toFixed(2);calc();flash('fxd','ใส่ใน Δ แล้ว ✓','ใช้ผลเป็น Δ')};
+g('fxe').onclick=()=>{const v=toDeg();if(v==null)return;$('E').value=+v.toFixed(4);calc();flash('fxe','ใส่ใน E แล้ว ✓','ใช้ผลเป็น E')};
+show();
+})();
 
-  function calculateFinalCurve() {
-    const D = parseFloat(document.getElementById('d_input').value);
-    const km = parseFloat(document.getElementById('sta_km').value) || 0;
-    const m = parseFloat(document.getElementById('sta_m').value) || 0;
-    const dir = parseInt(document.getElementById('curve_dir').value);
-    const P = km + m;
-
-    if (!D) return alert("⚠️ กรุณาใส่ค่า D ที่จะใช้จริง");
-
-    const A_rad = A_deg * (Math.PI / 180);
-    const R = 5729.578 / D;
-    const T = R * Math.tan(A_rad / 2);
-    let E = T * Math.tan(A_rad / 4);
-    E = Math.round(E * 1000) / 1000;
-    
-    const L = (100 * A_deg) / D;
-    const B = P - T;
-    const C = B + L;
-    const X = (2 * T) - L;
-
-    const nextFullSta = Math.ceil((P + 0.0001) / 25) * 25;
-    const distFromPi = (nextFullSta - P) + X;
-
-    document.getElementById('res_r').innerText = R.toFixed(3) + " ม.";
-    document.getElementById('res_t').innerText = T.toFixed(3) + " ม.";
-    document.getElementById('res_e').innerText = E.toFixed(3) + " ม.";
-    document.getElementById('res_l').innerText = L.toFixed(3) + " ม.";
-    document.getElementById('res_pc').innerText = formatStation(B);
-    document.getElementById('res_pt').innerText = formatStation(C);
-    document.getElementById('res_adj').innerText = X.toFixed(3) + " ม.";
-    document.getElementById('res_next_full_sta').innerText = formatStation(nextFullSta);
-    document.getElementById('res_dist_pi_to_full').innerText = distFromPi.toFixed(3) + " ม.";
-    document.getElementById('results_area').style.display = 'block';
-
-    currentCalculation = {
-      id: Date.now(),
-      name: document.getElementById('curve_name').value.trim() || `โค้ง STA ${formatStation(P)}`,
-      timestamp: new Date().toLocaleString('th-TH'),
-      direction: dir,
-      results: {
-        pi: formatStation(P), pc: formatStation(B), pt: formatStation(C),
-        r: R.toFixed(3), t: T.toFixed(3), e: E.toFixed(3), l: L.toFixed(3), adj: X.toFixed(3),
-        nextFullSta: formatStation(nextFullSta), distCamera: distFromPi.toFixed(3)
-      }
-    };
-
-    // ไดอะแกรมโค้ง (ไม่มีลูกศร และไม่มี STA เริ่ม 0+000)
-    let svgContent = '';
-    if (dir === 1) { 
-      // โค้งขวา (PI อยู่ซ้าย)
-      svgContent = `
-        <svg id="survey_svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 430" width="100%" height="100%">
-          <defs><pattern id="dotBg" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.5" fill="#e2e8f0"/></pattern></defs>
-          <rect width="100%" height="100%" fill="url(#dotBg)"/>
-          
-          <path d="M 450 320 L 350 320 A 200 200 0 0 1 150 120 L 150 20" fill="none" stroke="#334155" stroke-width="45" stroke-linecap="round"/>
-          <path d="M 450 320 L 350 320 A 200 200 0 0 1 150 120 L 150 20" fill="none" stroke="#facc15" stroke-width="2" stroke-dasharray="12,12"/>
-          
-          <polyline points="350,320 150,320 150,120" fill="none" stroke="#ef4444" stroke-width="2" stroke-dasharray="6,4"/>
-          <line x1="350" y1="120" x2="350" y2="320" stroke="#ef4444" stroke-width="1.5"/>
-          <line x1="350" y1="120" x2="150" y2="120" stroke="#ef4444" stroke-width="1.5"/>
-
-          <!-- เส้น E ลากแนวทแยงเข้าโค้ง -->
-          <line x1="150" y1="320" x2="208.58" y2="261.42" stroke="#ea580c" stroke-width="2" stroke-linecap="round"/>
-
-          <!-- เส้นวัดระยะกล้องไป STA เต็ม (ไม่มีลูกศร) -->
-          <line x1="150" y1="320" x2="150" y2="385" stroke="#0284c7" stroke-width="2" stroke-dasharray="4,4"/>
-
-          <circle cx="350" cy="120" r="6" fill="#ef4444"/>
-          <circle cx="150" cy="320" r="6" fill="#ef4444"/>
-          <circle cx="350" cy="320" r="5" fill="#0284c7"/>
-          <circle cx="150" cy="120" r="5" fill="#0284c7"/>
-          <circle cx="208.58" cy="261.42" r="4" fill="#facc15"/>
-
-          <text x="140" y="325" class="svg-text-red" text-anchor="end">PI: ${formatStation(P)}</text>
-          <text x="365" y="340" class="svg-text-blue" text-anchor="start">PC: ${formatStation(B)}</text>
-          <text x="135" y="115" class="svg-text-blue" text-anchor="end">PT: ${formatStation(C)}</text>
-          
-          <text x="365" y="220" class="svg-text-red" text-anchor="start">R = ${R.toFixed(3)} m</text>
-          <text x="250" y="340" class="svg-text-gray" text-anchor="middle">T = ${T.toFixed(3)}</text>
-          <text x="170" y="275" class="svg-text-orange" text-anchor="end">E = ${E.toFixed(3)} m</text>
-          
-          <text x="160" y="380" fill="#0284c7" font-size="13" font-family="Prompt" font-weight="bold" paint-order="stroke" stroke="#ffffff" stroke-width="3">ระยะยิงกล้อง: ${distFromPi.toFixed(3)} ม. (STA ${formatStation(nextFullSta)})</text>
-          <text x="350" y="100" class="svg-text-gray" text-anchor="middle">จุดศูนย์กลาง (O)</text>
-        </svg>`;
-    } else {
-      // โค้งซ้าย (PI อยู่ขวา)
-      svgContent = `
-        <svg id="survey_svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 580 430" width="100%" height="100%">
-          <defs><pattern id="dotBg" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1.5" fill="#e2e8f0"/></pattern></defs>
-          <rect width="100%" height="100%" fill="url(#dotBg)"/>
-          
-          <path d="M 130 320 L 230 320 A 200 200 0 0 0 430 120 L 430 20" fill="none" stroke="#334155" stroke-width="45" stroke-linecap="round"/>
-          <path d="M 130 320 L 230 320 A 200 200 0 0 0 430 120 L 430 20" fill="none" stroke="#facc15" stroke-width="2" stroke-dasharray="12,12"/>
-          
-          <polyline points="230,320 430,320 430,120" fill="none" stroke="#ef4444" stroke-width="2" stroke-dasharray="6,4"/>
-          <line x1="230" y1="120" x2="230" y2="320" stroke="#ef4444" stroke-width="1.5"/>
-          <line x1="230" y1="120" x2="430" y2="120" stroke="#ef4444" stroke-width="1.5"/>
-
-          <!-- เส้น E ลากแนวทแยงเข้าโค้ง -->
-          <line x1="430" y1="320" x2="371.42" y2="261.42" stroke="#ea580c" stroke-width="2" stroke-linecap="round"/>
-
-          <!-- เส้นวัดระยะกล้องไป STA เต็ม (ไม่มีลูกศร) -->
-          <line x1="430" y1="320" x2="430" y2="385" stroke="#0284c7" stroke-width="2" stroke-dasharray="4,4"/>
-
-          <circle cx="230" cy="120" r="6" fill="#ef4444"/>
-          <circle cx="430" cy="320" r="6" fill="#ef4444"/>
-          <circle cx="230" cy="320" r="5" fill="#0284c7"/>
-          <circle cx="430" cy="120" r="5" fill="#0284c7"/>
-          <circle cx="371.42" cy="261.42" r="4" fill="#facc15"/>
-
-          <text x="440" y="325" class="svg-text-red" text-anchor="start">PI: ${formatStation(P)}</text>
-          <text x="215" y="340" class="svg-text-blue" text-anchor="end">PC: ${formatStation(B)}</text>
-          <text x="445" y="115" class="svg-text-blue" text-anchor="start">PT: ${formatStation(C)}</text>
-          
-          <text x="215" y="220" class="svg-text-red" text-anchor="end">R = ${R.toFixed(3)} m</text>
-          <text x="330" y="340" class="svg-text-gray" text-anchor="middle">T = ${T.toFixed(3)}</text>
-          <text x="410" y="275" class="svg-text-orange" text-anchor="start">E = ${E.toFixed(3)} m</text>
-          
-          <text x="420" y="380" fill="#0284c7" font-size="13" font-family="Prompt" font-weight="bold" text-anchor="end" paint-order="stroke" stroke="#ffffff" stroke-width="3">ระยะยิงกล้อง: ${distFromPi.toFixed(3)} ม. (STA ${formatStation(nextFullSta)})</text>
-          <text x="230" y="100" class="svg-text-gray" text-anchor="middle">จุดศูนย์กลาง (O)</text>
-        </svg>`;
-    }
-
-    document.getElementById('diagram_status').innerHTML = `รูปโค้งสำหรับ: <strong style="color:#0f172a;">${document.getElementById('curve_name').value || 'โค้งล่าสุด'}</strong>`;
-    document.getElementById('field_next_sta').innerText = formatStation(nextFullSta);
-    document.getElementById('field_pi_sta').innerText = formatStation(P);
-    document.getElementById('field_distance').innerText = distFromPi.toFixed(3) + ' ม.';
-    document.getElementById('diagram_render_area').innerHTML = svgContent;
-    document.getElementById('diagram_render_area').style.display = 'block';
-    document.getElementById('btn_save_png').style.display = 'block';
-
-    document.getElementById('results_area').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-
-  function getStoredRecords() {
-    const raw = localStorage.getItem('survey_hcurve_records');
-    return raw ? JSON.parse(raw) : [];
-  }
-
-  function saveSurveyRecord() {
-    if (!currentCalculation) return alert("⚠️ กรุณาคำนวณโค้งก่อนทำการบันทึก");
-    const records = getStoredRecords();
-    records.unshift(currentCalculation);
-    localStorage.setItem('survey_hcurve_records', JSON.stringify(records));
-    document.getElementById('record_count').innerText = records.length;
-    alert("✅ บันทึกข้อมูลโค้งสำเร็จ!");
-  }
-
-  function renderHistoryList() {
-    const records = getStoredRecords();
-    document.getElementById('record_count').innerText = records.length;
-    const container = document.getElementById('records_container');
-
-    if (records.length === 0) {
-      container.innerHTML = `<div style="text-align:center; padding:30px; color:#94a3b8;">ยังไม่มีประวัติการบันทึก</div>`;
-      return;
-    }
-
-    let html = '';
-    records.forEach((rec) => {
-      const dirTxt = rec.direction === -1 ? "เลี้ยวซ้าย ↶" : "เลี้ยวขวา ↷";
-      html += `
-        <div class="history-card">
-          <div class="history-header">
-            <div>
-              <div class="history-title">${rec.name} <span style="font-size:0.7rem; background:#e0f2fe; color:#0284c7; padding:2px 6px; border-radius:4px;">${dirTxt}</span></div>
-            </div>
-            <button onclick="deleteRecord(${rec.id})" style="background:#fee2e2; color:#dc2626; border:none; padding:3px 8px; border-radius:5px; font-weight:700; cursor:pointer; font-size:0.75rem;">ลบ</button>
-          </div>
-          <div class="history-grid">
-            <div class="history-item"><span>STA PC</span><b>${rec.results.pc}</b></div>
-            <div class="history-item"><span>STA PI</span><b>${rec.results.pi}</b></div>
-            <div class="history-item"><span>STA PT</span><b>${rec.results.pt}</b></div>
-            <div class="history-item"><span>รัศมี R</span><b>${rec.results.r} ม.</b></div>
-            <div class="history-item"><span>ระยะ L</span><b>${rec.results.l} ม.</b></div>
-            <div class="history-item"><span>ปรับแก้ ADJ</span><b>${rec.results.adj} ม.</b></div>
-          </div>
-        </div>`;
-    });
-    container.innerHTML = html;
-  }
-
-  function deleteRecord(id) {
-    if (!confirm("ต้องการลบข้อมูลโค้งนี้หรือไม่?")) return;
-    let records = getStoredRecords().filter(r => r.id !== id);
-    localStorage.setItem('survey_hcurve_records', JSON.stringify(records));
-    renderHistoryList();
-  }
-
-  function clearAllRecords() {
-    if (!confirm("⚠️ ยืนยันการล้างประวัติข้อมูลทั้งหมด?")) return;
-    localStorage.removeItem('survey_hcurve_records');
-    renderHistoryList();
-  }
-
-  // ดาวน์โหลดรูปแปลนความละเอียดสูง (.PNG)
-  function downloadDiagramPNG() {
-    const svg = document.getElementById('survey_svg');
-    if (!svg) return alert("ไม่พบข้อมูลแปลน");
-
-    const serializer = new XMLSerializer();
-    const svgStr = serializer.serializeToString(svg);
-    const canvas = document.createElement('canvas');
-    canvas.width = 1160;
-    canvas.height = 860;
-    const ctx = canvas.getContext('2d');
-    const img = new Image();
-    const svgBlob = new Blob([svgStr], {type: 'image/svg+xml;charset=utf-8'});
-    const url = URL.createObjectURL(svgBlob);
-
-    img.onload = function() {
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      URL.revokeObjectURL(url);
-      
-      const a = document.createElement('a');
-      a.download = `CURVE_DIAGRAM_${new Date().toISOString().slice(0,10)}.png`;
-      a.href = canvas.toDataURL('image/png');
-      a.click();
-    };
-    img.src = url;
-  }
-
-  // ส่งออกรายงาน Excel พร้อมรูปโค้งของแต่ละโค้ง
-  async function exportToCleanExcel() {
-    const records = getStoredRecords();
-    if (records.length === 0) return alert("ไม่มีข้อมูลให้ส่งออก");
-
-    // โหลด ExcelJS ครั้งแรกที่กด Export
-    if (!window.ExcelJS) {
-      const script = document.createElement('script');
-      script.src = 'https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js';
-      script.onload = () => exportToCleanExcel();
-      script.onerror = () => alert("ไม่สามารถโหลดระบบ Excel ได้ กรุณาตรวจสอบอินเทอร์เน็ตแล้วลองใหม่");
-      document.head.appendChild(script);
-      return;
-    }
-
-    const chronologicalRecords = records.slice().reverse();
-    const workbook = new ExcelJS.Workbook();
-    workbook.creator = 'H-CURVE CALCULATOR PRO';
-    workbook.created = new Date();
-
-    const ws = workbook.addWorksheet('Curve Report');
-    ws.views = [{ state: 'frozen', ySplit: 4 }];
-    ws.columns = [
-      { header: 'ลำดับ', key: 'no', width: 9 },
-      { header: 'ชื่อโค้ง', key: 'name', width: 22 },
-      { header: 'โค้ง', key: 'direction', width: 14 },
-      { header: 'วัน-เวลาสำรวจ', key: 'timestamp', width: 23 },
-      { header: 'STA PC', key: 'pc', width: 15 },
-      { header: 'STA PI', key: 'pi', width: 15 },
-      { header: 'STA PT', key: 'pt', width: 15 },
-      { header: 'รัศมี R (ม.)', key: 'r', width: 14 },
-      { header: 'สัมผัส T (ม.)', key: 't', width: 14 },
-      { header: 'ภายนอก E (ม.)', key: 'e', width: 14 },
-      { header: 'ความยาว L (ม.)', key: 'l', width: 14 },
-      { header: 'ปรับแก้ ADJ (ม.)', key: 'adj', width: 16 },
-      { header: 'ระยะยิงกล้อง (ม.)', key: 'distCamera', width: 18 },
-      { header: 'รูปโค้ง', key: 'diagram', width: 40 }
-    ];
-
-    // ช่อง N = 40 ตามแบบรายงานที่กำหนด
-    ws.getColumn(14).width = 40;
-
-    ws.mergeCells('A1:N1');
-    ws.getCell('A1').value = 'คำนวณโค้งราบ (HORIZONTAL CURVE REPORT)';
-    ws.getCell('A1').font = { bold: true, size: 18, color: { argb: 'FFFFFFFF' } };
-    ws.getCell('A1').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0369A1' } };
-    ws.getCell('A1').alignment = { horizontal: 'center', vertical: 'middle' };
-    ws.getRow(1).height = 32;
-
-    ws.mergeCells('A2:N2');
-    ws.getCell('A2').value = 'โครงการงานทางวิศวกรรมภาคสนาม | จัดทำเมื่อ: ' + new Date().toLocaleString('th-TH');
-    ws.getCell('A2').font = { size: 11, color: { argb: 'FF475569' } };
-    ws.getCell('A2').fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF1F5F9' } };
-    ws.getCell('A2').alignment = { horizontal: 'center' };
-
-    ws.mergeCells('A3:N3');
-    ws.getCell('A3').value = 'รายงานผลการคำนวณโค้งราบ พร้อมรูปโค้งประกอบแต่ละรายการ';
-    ws.getCell('A3').font = { italic: true, size: 10, color: { argb: 'FF64748B' } };
-    ws.getCell('A3').alignment = { horizontal: 'center' };
-
-    const headerRow = ws.getRow(4);
-    headerRow.values = ws.columns.map(c => c.header);
-    headerRow.height = 28;
-    headerRow.eachCell(cell => {
-      cell.font = { bold: true, color: { argb: 'FFFFFFFF' } };
-      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0F172A' } };
-      cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
-      cell.border = { top:{style:'thin',color:{argb:'FF94A3B8'}}, bottom:{style:'thin',color:{argb:'FF94A3B8'}}, left:{style:'thin',color:{argb:'FF94A3B8'}}, right:{style:'thin',color:{argb:'FF94A3B8'}} };
-    });
-
-    function makeDiagramSvg(record) {
-      const right = record.direction !== -1;
-      const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-      svg.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-      svg.setAttribute('viewBox', '0 0 580 430');
-      svg.setAttribute('width', '1160');
-      svg.setAttribute('height', '860');
-
-      const ns = 'http://www.w3.org/2000/svg';
-      const add = (tag, attrs, text) => {
-        const el = document.createElementNS(ns, tag);
-        Object.entries(attrs || {}).forEach(([k,v]) => el.setAttribute(k, v));
-        if (text !== undefined) el.textContent = text;
-        svg.appendChild(el);
-        return el;
-      };
-
-      add('rect', {x:0,y:0,width:'100%',height:'100%',fill:'#ffffff'});
-
-      const pathD = right
-        ? 'M 450 320 L 350 320 A 200 200 0 0 1 150 120 L 150 20'
-        : 'M 130 320 L 230 320 A 200 200 0 0 0 430 120 L 430 20';
-
-      // ถนนและเส้นกึ่งกลาง
-      add('path', {d:pathD, fill:'none', stroke:'#334155', 'stroke-width':45, 'stroke-linecap':'round'});
-      add('path', {d:pathD, fill:'none', stroke:'#facc15', 'stroke-width':2, 'stroke-dasharray':'12,12'});
-
-      // เส้นประกอบ PI-PC-PT / แนวสัมผัส / แนว R
-      if (right) {
-        add('polyline', {points:'350,320 150,320 150,120', fill:'none', stroke:'#ef4444', 'stroke-width':2, 'stroke-dasharray':'6,4'});
-        add('line', {x1:350,y1:120,x2:350,y2:320, stroke:'#ef4444', 'stroke-width':1.5});
-        add('line', {x1:350,y1:120,x2:150,y2:120, stroke:'#ef4444', 'stroke-width':1.5});
-        add('line', {x1:150,y1:320,x2:208.58,y2:261.42, stroke:'#ea580c', 'stroke-width':2, 'stroke-linecap':'round'});
-        add('line', {x1:150,y1:320,x2:150,y2:385, stroke:'#0284c7', 'stroke-width':2, 'stroke-dasharray':'4,4'});
-      } else {
-        add('polyline', {points:'230,320 430,320 430,120', fill:'none', stroke:'#ef4444', 'stroke-width':2, 'stroke-dasharray':'6,4'});
-        add('line', {x1:230,y1:120,x2:230,y2:320, stroke:'#ef4444', 'stroke-width':1.5});
-        add('line', {x1:230,y1:120,x2:430,y2:120, stroke:'#ef4444', 'stroke-width':1.5});
-        add('line', {x1:430,y1:320,x2:371.42,y2:261.42, stroke:'#ea580c', 'stroke-width':2, 'stroke-linecap':'round'});
-        add('line', {x1:430,y1:320,x2:430,y2:385, stroke:'#0284c7', 'stroke-width':2, 'stroke-dasharray':'4,4'});
-      }
-
-      // จุดสำคัญ
-      if (right) {
-        add('circle',{cx:350,cy:120,r:6,fill:'#ef4444'});
-        add('circle',{cx:150,cy:320,r:6,fill:'#ef4444'});
-        add('circle',{cx:350,cy:320,r:5,fill:'#0284c7'});
-        add('circle',{cx:150,cy:120,r:5,fill:'#0284c7'});
-        add('circle',{cx:208.58,cy:261.42,r:4,fill:'#facc15'});
-      } else {
-        add('circle',{cx:230,cy:120,r:6,fill:'#ef4444'});
-        add('circle',{cx:430,cy:320,r:6,fill:'#ef4444'});
-        add('circle',{cx:230,cy:320,r:5,fill:'#0284c7'});
-        add('circle',{cx:430,cy:120,r:5,fill:'#0284c7'});
-        add('circle',{cx:371.42,cy:261.42,r:4,fill:'#facc15'});
-      }
-
-      const text = (x,y,str,fill,size,anchor='start') => add('text', {
-        x,y,fill,'font-size':size,'font-family':'Arial, Tahoma, sans-serif',
-        'font-weight':'bold','text-anchor':anchor,
-        'paint-order':'stroke','stroke':'#ffffff','stroke-width':3
-      }, str);
-
-      if (right) {
-        text(140,325,`PI: ${record.results.pi}`,'#ef4444',15,'end');
-        text(365,340,`PC: ${record.results.pc}`,'#0284c7',14,'start');
-        text(135,115,`PT: ${record.results.pt}`,'#0284c7',14,'end');
-        text(365,220,`R = ${record.results.r} m`,'#ef4444',15,'start');
-        text(250,340,`T = ${record.results.t}`,'#475569',13,'middle');
-        text(170,275,`E = ${record.results.e} m`,'#ea580c',13,'end');
-        text(160,380,`ระยะยิงกล้อง: ${record.results.distCamera} ม. (STA ${record.results.nextFullSta})`,'#0284c7',13,'start');
-        text(350,100,'จุดศูนย์กลาง (O)','#475569',13,'middle');
-      } else {
-        text(440,325,`PI: ${record.results.pi}`,'#ef4444',15,'start');
-        text(215,340,`PC: ${record.results.pc}`,'#0284c7',14,'end');
-        text(445,115,`PT: ${record.results.pt}`,'#0284c7',14,'start');
-        text(215,220,`R = ${record.results.r} m`,'#ef4444',15,'end');
-        text(330,340,`T = ${record.results.t}`,'#475569',13,'middle');
-        text(410,275,`E = ${record.results.e} m`,'#ea580c',13,'start');
-        text(420,380,`ระยะยิงกล้อง: ${record.results.distCamera} ม. (STA ${record.results.nextFullSta})`,'#0284c7',13,'end');
-        text(230,100,'จุดศูนย์กลาง (O)','#475569',13,'middle');
-      }
-      return svg;
-    }
-
-    function svgToPngDataUrl(svg) {
-      const xml = new XMLSerializer().serializeToString(svg);
-      const svgBlob = new Blob([xml], {type:'image/svg+xml;charset=utf-8'});
-      const url = URL.createObjectURL(svgBlob);
-
-      return new Promise((resolve, reject) => {
-        const img = new Image();
-        img.onload = () => {
-          try {
-            const canvas = document.createElement('canvas');
-            canvas.width = 1160;
-            canvas.height = 860;
-            const ctx = canvas.getContext('2d');
-            ctx.fillStyle = '#ffffff';
-            ctx.fillRect(0,0,canvas.width,canvas.height);
-            ctx.drawImage(img,0,0,canvas.width,canvas.height);
-            URL.revokeObjectURL(url);
-            resolve(canvas.toDataURL('image/png'));
-          } catch (err) {
-            URL.revokeObjectURL(url);
-            reject(err);
-          }
-        };
-        img.onerror = () => {
-          URL.revokeObjectURL(url);
-          reject(new Error('ไม่สามารถแปลงรูปโค้งเป็น PNG ได้'));
-        };
-        img.src = url;
-      });
-    }
-
-    for (let i = 0; i < chronologicalRecords.length; i++) {
-      const r = chronologicalRecords[i];
-      const row = ws.addRow([
-        i + 1, r.name, r.direction === -1 ? 'โค้งซ้าย ↶' : 'โค้งขวา ↷', r.timestamp,
-        r.results.pc, r.results.pi, r.results.pt,
-        Number(r.results.r), Number(r.results.t), Number(r.results.e),
-        Number(r.results.l), Number(r.results.adj), Number(r.results.distCamera),
-        ''
-      ]);
-
-      // ขนาดรายงาน Excel ตามสเกลที่ใช้งานจริง
-      // แถว 177 pt ≈ 6.25 ซม. ที่ 96 dpi / 72 pt ต่อ inch
-      row.height = 177;
-      row.eachCell((cell, col) => {
-        cell.alignment = { horizontal: 'center', vertical: 'middle', wrapText: true };
-        cell.border = {
-          top:{style:'thin',color:{argb:'FF94A3B8'}},
-          bottom:{style:'thin',color:{argb:'FF94A3B8'}},
-          left:{style:'thin',color:{argb:'FF94A3B8'}},
-          right:{style:'thin',color:{argb:'FF94A3B8'}}
-        };
-        if (col >= 8 && col <= 13) cell.numFmt = '0.000';
-      });
-
-      row.getCell(13).fill = { type:'pattern', pattern:'solid', fgColor:{argb:'FFF0FDF4'} };
-      row.getCell(13).font = { bold:true, color:{argb:'FF166534'} };
-
-      // แปลงเป็น PNG ก่อนฝัง เพื่อให้เส้นถนนและเส้นประกอบแสดงใน Excel ได้ครบ
-      const pngData = await svgToPngDataUrl(makeDiagramSvg(r));
-      const imageId = workbook.addImage({
-        base64: pngData,
-        extension: 'png'
-      });
-
-      // ช่อง N เป็นช่องรูปโดยเฉพาะ: ไม่ใส่ข้อความ/placeholder ในเซลล์
-      row.getCell(14).value = null;
-      row.getCell(14).alignment = { horizontal: 'center', vertical: 'middle' };
-
-      // ฝังรูปกับเซลล์ N ของแถวนั้นโดยตรงในลักษณะ Cell Anchor
-      // ขนาดตามที่วัดแล้ว: กว้าง 8.56 ซม. x สูง 6.25 ซม.
-      // 96 dpi => 323.53 x 236.22 px และ Row Height 177 pt ≈ 236 px
-      // editAs: oneCell = รูปจะติด/เคลื่อนตามเซลล์ N ไม่ลอยไปตามแถวอื่น
-      ws.addImage(imageId, {
-        tl: { col: 13, row: row.number - 1 },
-        ext: { width: 323.53, height: 236.22 },
-        editAs: 'oneCell'
-      });
-    }
-
-    ws.autoFilter = { from: 'A4', to: `N${ws.lastRow.number}` };
-
-    const buffer = await workbook.xlsx.writeBuffer();
-    const blob = new Blob([buffer], {
-      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    });
-
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `SURVEY_REPORT_${new Date().toISOString().slice(0,10)}.xlsx`;
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-  }
-
-  document.getElementById('record_count').innerText = getStoredRecords().length;
 </script>
 </body>
 </html>
